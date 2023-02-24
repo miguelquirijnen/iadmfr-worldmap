@@ -2,11 +2,9 @@
 * {
   margin: 0;
   padding: 0;
+  background-color: #d6cfd1;
 }
 
-body {
-  background-color: #e0cccf;
-}
 
 canvas {
   /* fill: #64020e; */
@@ -16,12 +14,14 @@ canvas {
 
 svg g {
   fill: #64020e;
-  stroke: #eee;
-  stroke-width: .25;
+  stroke: #64020e;
+  stroke-width: 1.5;
 }
 
 svg g:hover {
   fill: #280106;
+  stroke: #280106;
+  stroke-width: 1.5;
   transition: 0.6s;
   cursor: pointer;
 }
@@ -37,3 +37,18 @@ svg g:hover {
   transition: 0.6s;
   cursor: pointer;
 }   */
+
+h1 {
+  margin: 20px;
+}
+
+.logoBox {
+  position:absolute;
+  bottom: 5px;
+  left: 10px;
+  margin: 40px;
+}
+
+.iadmfr-logo {
+  width: 200pt;
+}

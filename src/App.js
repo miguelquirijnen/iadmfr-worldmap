@@ -1,10 +1,8 @@
-import { Belgium } from "./Countries";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 // import Modal from "./Modal";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Worldmap from "./Worldmap";
-import { Europe } from "./Continents";
 import DrawingCanvas from "./DrawingCanvas";
 
 function App() {
