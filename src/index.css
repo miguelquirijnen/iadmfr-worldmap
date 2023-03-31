@@ -2,14 +2,39 @@
 * {
   margin: 0;
   padding: 0;
-  background-color: #d6cfd1;
+  width:100vw; 
 }
 
+body {
+  margin: auto;
+  height: 100vh;
+}
 
 canvas {
-  /* fill: #64020e; */
   stroke: #64020e;
   stroke-width: .25;
+}
+
+.wrapper {
+  height: 100vh;
+  width: 100vw;
+  background-color: #d6cfd1;
+
+}
+
+.worldmap {
+  height: 100vh;
+  margin:auto; 
+  display:block;
+  z-index: 3;
+}
+
+.returnButton {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  height: 50px;
 }
 
 svg g {
@@ -46,9 +71,12 @@ h1 {
   position:absolute;
   bottom: 5px;
   left: 10px;
-  margin: 40px;
+  margin-left: 40px;
+  margin-bottom: 40px;
+  z-index: 1;
+  width: auto;
 }
 
 .iadmfr-logo {
-  width: 200pt;
+  width: 150pt;
 }

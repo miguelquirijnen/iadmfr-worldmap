@@ -1,3 +1,5 @@
+import React, { useRef } from "react";
+import { gsap } from "gsap";
 import {
   Africa,
   Asia,
@@ -8,49 +10,89 @@ import {
   NorthAmerica,
 } from "./Continents";
 import { IADMFR_LOGO } from "./logo";
+import { useState } from "react";
 
-function Worldmap(props) {
+// Declaration of all the constants
+const BASE_VIEWBOX = "0 0 2000 857"
+const ANIMATION_DURATION = 0.5 // in seconds
+
+function Worldmap() {
+  const [viewBox, setViewBox] = useState(BASE_VIEWBOX)
+  const [drawingMode, setDrawingMode] = useState(false)
+  const [currentContinent, setCurrentContinent] = useState("");
+
+  const svgRef = useRef(null);
+
+  const handleContinentClick = async (e) => {
+    if (drawingMode) return;
+
+    const gBox = e.currentTarget.getBBox();
+    const newViewBox = `${gBox.x} ${gBox.y} ${gBox.width} ${gBox.height}`;
+
+    gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: newViewBox } });
+
+    // Enable drawing
+    setDrawingMode(true);
+
+    setCurrentContinent(e.currentTarget.id);
+  }
+
+  const handleReturnClick = (e) => {
+    // Disable drawing
+    setDrawingMode(false);
+
+    gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: BASE_VIEWBOX } });
+
+    setCurrentContinent("");
+  }
+
   return (
-    <>
-    <svg
-      baseProfile="tiny"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      version="1.2"
-      viewBox="0 0 2000 857"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <g onClick={(e) => props.activateArea(e)} className="Asia">
-        <Asia />
-      </g>
-      <g onClick={(e) => props.activateArea(e)} className="Africa">
-        <Africa />
-      </g>
-      <g onClick={(e) => props.activateArea(e)} className="Europe">
-        <Europe />
-      </g>
-      <g onClick={(e) => props.activateArea(e)} className="MiddleEast">
-        <MiddleEast />
-      </g>
-      <g onClick={(e) => props.activateArea(e)} className="NorthAmerica">
-        <NorthAmerica />
-      </g>
-      <g onClick={(e) => props.activateArea(e)} className="LatinAmerica">
-        <LatinAmerica />
-      </g>
-      <g onClick={(e) => props.activateArea(e)} className="LatinAmerica">
-        <Australasia />
-      </g>
+    <div style={{ overflow: "hidden" }}>
+      <svg
+        ref={svgRef}
+        baseProfile="tiny"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="worldmap"
+        id="worldmap"
+        viewBox={viewBox}
+      >
+        <g onClick={(e) => handleContinentClick(e)} className="Asia" id="asia">
+          <Asia />
+        </g>
+        <g onClick={(e) => handleContinentClick(e)} className="Africa" id="africa">
+          <Africa />
+        </g>
+        <g onClick={(e) => handleContinentClick(e)} className="Europe" id="europe">
+          <Europe />
+        </g>
+        <g onClick={(e) => handleContinentClick(e)} className="MiddleEast" id="middle-east">
+          <MiddleEast />
+        </g>
+        <g onClick={(e) => handleContinentClick(e)} className="NorthAmerica" id="north-america">
+          <NorthAmerica />
+        </g>
+        <g onClick={(e) => handleContinentClick(e)} className="LatinAmerica" id="latin-america">
+          <LatinAmerica />
+        </g>
+        <g onClick={(e) => handleContinentClick(e)} className="Australasia" id="australasia">
+          <Australasia />
+        </g>
+      </svg>
+      <div className="logoBox">
+        <IADMFR_LOGO />
+      </div>
+      {drawingMode && <button className="returnButton" onClick={(e) => handleReturnClick(e)} >Return</button>}
 
-      <circle cx="997.9" cy="189.1" id="0"></circle>
-      <circle cx="673.5" cy="724.1" id="1"></circle>
-      <circle cx="1798.2" cy="719.3" id="2"></circle>
-    </svg>
-    <div className="logoBox">
-      <IADMFR_LOGO/>
+      {/* TODO REMOVE */}
+      <a style={{ position: "absolute", bottom: "10px", right: "600px", width: "300px", height: "80px" }}>
+        {`Drawingmode: ${drawingMode} `}
+        <br />
+        {` ViewBox: ${viewBox}`}
+        <br />
+        {` Continent: ${currentContinent}`}
+      </a>
     </div>
-
-    </>
   );
 }
 
