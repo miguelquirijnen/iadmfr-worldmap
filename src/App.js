@@ -1,4 +1,4 @@
-import Worldmap from "./Worldmap";
+import Worldmap from "./Components/World/Worldmap";
 
 function App() {
   return (

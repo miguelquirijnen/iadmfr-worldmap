@@ -60,6 +60,7 @@ const Canvas = ({width, height}) => {
         onMouseMove={draw}
         ref={canvasRef}
         style={canvasStyle}
+        id={"canvas"}
         // width={"50vw"}
         // height={"70vh"}
       />

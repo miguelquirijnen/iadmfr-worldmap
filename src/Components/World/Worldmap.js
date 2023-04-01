@@ -9,9 +9,12 @@ import {
   MiddleEast,
   NorthAmerica,
 } from "./Continents";
-import { IADMFR_LOGO } from "./Logo";
+import { IADMFR_LOGO } from "../../Logo";
 import { useState } from "react";
-import Canvas from "./Components/Canvas";
+
+import ContinentConfirmationStep from "../Steps/ContinentConfirmation";
+import DrawingStep from "../Steps/DrawingStep";
+import PlacementStep from "../Steps/PlacementStep";
 
 // Declaration of all the constants
 const BASE_VIEWBOX = "0 0 2000 857"
@@ -32,43 +35,63 @@ function Worldmap() {
   const [currentStep, setCurrentStep] = useState(steps.continentSelection)
 
   const svgRef = useRef(null);
+  const canvasRef = useRef(null);
 
+  /* 
+    STEP 1: CLICK ON CONTINENT
+  */
   const handleContinentClick = async (e) => {
     if (currentStep !== steps.continentSelection) return;
+    const continent = e.currentTarget
 
-    const gBox = e.currentTarget.getBBox();
+    const gBox = continent.getBBox();
     const newViewBox = `${gBox.x} ${gBox.y} ${gBox.width} ${gBox.height}`;
-
     gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: newViewBox } });
 
-    // Start msg 
     setCurrentStep(steps.continentConfirmation)
-
-    setCurrentContinent(e.currentTarget.id);
+    setCurrentContinent(continent.id);
   }
 
+  /*
+    STEP 2: CONFIRM SELECTED CONTINENT
+  */
   const handleConfirmContinentClick = (e) => {
-    // Disable drawing
     setCurrentStep(steps.messageDrawing);
     setDrawingMode(true);
-
   }
 
-  const handleConfirmMessageClick  = (e) => {
-    // Disable drawing
+  /*
+    STEP 3: CONFIRM MESSAGE CONTENT
+  */
+  const handleConfirmMessageClick = (e) => {
     setDrawingMode(false);
-    setCurrentStep(steps.messagePlacing);
+
+    const canvas = document.getElementById("canvas");
+    console.log(canvas)
+    const dataURL = canvas.toDataURL('image/png');
+    console.log(dataURL)
+    // const link = document.createElement('a');
+    // link.download = 'canvas.png';
+    // link.href = dataURL;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+
+    // setCurrentStep(steps.messagePlacing);
   }
 
+  /*
+    STEP 3: CONFIRM MESSAGE PLACEMENT
+  */
   const handleConfirmPlacementClick = (e) => {
     setCurrentStep(steps.continentSelection);
-
     gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: BASE_VIEWBOX } });
   }
 
-
+  /*
+    RETURN TO BASE WORLD MAP
+  */
   const handleReturnClick = (e) => {
-    // Disable drawing
     setDrawingMode(false);
     setMsgInProgress(false);
     setCurrentStep(steps.continentSelection)
@@ -76,9 +99,10 @@ function Worldmap() {
 
     gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: BASE_VIEWBOX } });
   }
-  
+
   return (
     <div style={{ overflow: "hidden" }}>
+      {/* --------------------------- WORLDMAP --------------------------- */}
       <svg
         ref={svgRef}
         baseProfile="tiny"
@@ -110,26 +134,29 @@ function Worldmap() {
           <Australasia />
         </g>
       </svg>
+      {/* -------------------------- IADMFR LOGO -------------------------- */}
       <div className="logoBox">
         <IADMFR_LOGO />
       </div>
-      {currentStep === steps.continentConfirmation && <>
-        <a style={confirmationTextStyle}>{`Confirm ${currentContinent}?`}</a>
-        <button className="confirmContinentButton" onClick={(e) => handleConfirmContinentClick(e)} >Confirm continent</button>
-        <button className="returnButton" onClick={(e) => handleReturnClick(e)} >Return</button>
-      </>}
-      {currentStep === steps.messageDrawing && <>
-        <Canvas width={"200px"} height={"200px"} />
-        <button className="confirmMessageButton" onClick={(e) => handleConfirmMessageClick(e)} >Confirm Message</button>
-        <button className="returnButton" onClick={(e) => handleReturnClick(e)} >Return</button>
-      </>}
-      {currentStep === steps.messagePlacing && <>
-        <a style={confirmationTextStyle}>{`Place your message on the continent.`}</a>
-        <button className="confirmContinentButton" onClick={(e) => handleConfirmPlacementClick(e)} >Confirm placement</button>
-        <button className="returnButton" onClick={(e) => handleReturnClick(e)} >Return</button>
-      </>}
-
-      {/* TODO REMOVE */}
+      {/* ------------------------ STEP COMPONENTS ------------------------ */}
+      {currentStep === steps.continentConfirmation &&
+        <ContinentConfirmationStep
+          currentContinent={currentContinent}
+          handleConfirmContinentClick={handleConfirmContinentClick}
+          handleReturnClick={handleReturnClick}
+        />}
+      {currentStep === steps.messageDrawing &&
+        <DrawingStep
+          canvasRef={canvasRef}
+          handleConfirmMessageClick={handleConfirmMessageClick}
+          handleReturnClick={handleReturnClick}
+        />}
+      {currentStep === steps.messagePlacing &&
+        <PlacementStep
+          handleConfirmPlacementClick={handleConfirmPlacementClick}
+          handleReturnClick={handleReturnClick}
+        />}
+      {/* ---------------------- DEBUGGING COMPONENTS ---------------------- */}
       <a style={{ position: "absolute", bottom: "10px", right: "600px", width: "300px", height: "100px" }}>
         {`Drawingmode: ${drawingMode} `}
         <br />
@@ -141,15 +168,6 @@ function Worldmap() {
       </a>
     </div>
   );
-}
-
-const confirmationTextStyle = {
-  color: "white",
-  fontSize: "large",
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  marginRight: "-50%",
 }
 
 export default Worldmap;
