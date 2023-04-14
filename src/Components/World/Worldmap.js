@@ -77,7 +77,7 @@ function Worldmap() {
     // link.click();
     // document.body.removeChild(link);
 
-    // setCurrentStep(steps.messagePlacing);
+    setCurrentStep(steps.messagePlacing);
   }
 
   /*
