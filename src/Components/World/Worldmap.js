@@ -16,6 +16,7 @@ import ContinentConfirmationStep from "../Steps/ContinentConfirmation";
 import DrawingStep from "../Steps/DrawingStep";
 import PlacementStep from "../Steps/PlacementStep";
 
+
 // Declaration of all the constants
 const BASE_VIEWBOX = "0 0 2000 857"
 const ANIMATION_DURATION = 0.5 // in seconds
@@ -63,19 +64,20 @@ function Worldmap() {
   /*
     STEP 3: CONFIRM MESSAGE CONTENT
   */
-  const handleConfirmMessageClick = (e) => {
+  const handleConfirmMessageClick = async (e) => {
     setDrawingMode(false);
 
     const canvas = document.getElementById("canvas");
-    console.log(canvas)
     const dataURL = canvas.toDataURL('image/png');
-    console.log(dataURL)
-    // const link = document.createElement('a');
-    // link.download = 'canvas.png';
-    // link.href = dataURL;
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+ 
+    fetch(
+      'http://localhost:5000/post-message', {
+          method: "post",
+          body: JSON.stringify({ data: dataURL}),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
 
     setCurrentStep(steps.messagePlacing);
   }
