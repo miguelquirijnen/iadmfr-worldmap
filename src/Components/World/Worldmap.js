@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import {
   Africa,
@@ -15,7 +15,14 @@ import { useState } from "react";
 import ContinentConfirmationStep from "../Steps/ContinentConfirmation";
 import DrawingStep from "../Steps/DrawingStep";
 import PlacementStep from "../Steps/PlacementStep";
-import { BASE_VIEWBOX, ANIMATION_DURATION, steps, VIEWBOXES} from "../../constants";
+import {
+  BASE_VIEWBOX,
+  ANIMATION_DURATION,
+  steps,
+  VIEWBOXES,
+} from "../../constants";
+
+import { fetchMessages } from "../../Database/requests";
 
 function Worldmap() {
   const [viewBox, setViewBox] = useState(BASE_VIEWBOX);
@@ -24,6 +31,9 @@ function Worldmap() {
   const [currentContinent, setCurrentContinent] = useState("");
   const [currentStep, setCurrentStep] = useState(steps.continentSelection);
   const [currentMessage, setCurrentMessage] = useState();
+  const [dataUrl, setDataUrl] = useState();
+  const [messages, setMessages] = useState([]);
+  const [zoomFactor, setZoomFactor] = useState(1.0);
 
   const svgRef = useRef(null);
 
@@ -35,37 +45,37 @@ function Worldmap() {
     }
   };
 
-  /* 
-    STEP I: CLICK ON CONTINENT
-  */
+  // STEP I  - CLICK ON CONTINENT
   const handleContinentClick = async (e) => {
-    console.log(currentStep)
     if (currentStep !== steps.continentSelection) return;
     const continent = e.currentTarget;
-    
-    const newViewBox = VIEWBOXES[continent.id]
-    console.log("newViewBox = " + newViewBox + " / " + continent.id)
 
     gsap.to(svgRef.current, {
       duration: ANIMATION_DURATION,
-      attr: { viewBox: newViewBox },
+      attr: { viewBox: VIEWBOXES[continent.id] },
+      onComplete: () => {
+        const currentViewBox = svgRef.current.getAttribute("viewBox");
+        const initialDimensions = BASE_VIEWBOX.split(" ");
+        const currentDimensions = currentViewBox.split(" ");
+    
+        const initialWidth = parseFloat(initialDimensions[2]);
+        const currentWidth = parseFloat(currentDimensions[2]);
+    
+        setZoomFactor(initialWidth / currentWidth);
+      },
     });
 
     setCurrentStep(steps.continentConfirmation);
     setCurrentContinent(continent.id);
   };
 
-  /*
-    STEP II: CONFIRM SELECTED CONTINENT
-  */
+  // STEP II - CONFIRM SELECTED CONTINENT
   const handleConfirmContinentClick = (e) => {
     setCurrentStep(steps.messageDrawing);
     setDrawingMode(true);
   };
 
-  /*
-    RETURN TO BASE WORLD MAP
-  */
+  // Handle return click
   const handleReturnClick = (e) => {
     setDrawingMode(false);
     setMsgInProgress(false);
@@ -75,7 +85,154 @@ function Worldmap() {
     gsap.to(svgRef.current, {
       duration: ANIMATION_DURATION,
       attr: { viewBox: BASE_VIEWBOX },
+      onComplete: () => {
+        const currentViewBox = svgRef.current.getAttribute("viewBox");
+        const initialDimensions = BASE_VIEWBOX.split(" ");
+        const currentDimensions = currentViewBox.split(" ");
+    
+        const initialWidth = parseFloat(initialDimensions[2]);
+        const currentWidth = parseFloat(currentDimensions[2]);
+    
+        setZoomFactor( initialWidth/currentWidth );
+      },
     });
+  };
+
+  useEffect(() => {
+    // Fetch objects from the database
+    fetchMessages()
+      .then((data) => {
+        console.log(data);
+        setMessages(data);
+      })
+      .catch((error) => console.error(error));
+  }, [currentStep]);
+
+  const renderMessagesAfrica = () => {
+    return messages
+      .filter((msg) => (msg.continent = "africa"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
+  };
+
+  const renderMessagesAsia = () => {
+    return messages
+      .filter((msg) => (msg.continent = "asia"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
+  };
+
+  const renderMessagesAustralasia = () => {
+    return messages
+      .filter((msg) => (msg.continent = "australasia"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
+  };
+
+  // Render the message objects on the world map
+  const renderMessagesEurope = () => {
+    return messages
+      .filter((msg) => (msg.continent = "europe"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
+  };
+
+  const renderMessagesLatinAmerica = () => {
+    return messages
+      .filter((msg) => (msg.continent = "latin-america"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
+  };
+
+  const renderMessagesMiddleEast = () => {
+    return messages
+      .filter((msg) => (msg.continent = "middle-east"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
+  };
+
+  const renderMessagesNorthAmerica = () => {
+    return messages
+      .filter((msg) => (msg.continent = "north-america"))
+      .map((msg) => (
+        <image
+          key={msg.id}
+          x={0}
+          y={0}
+          data-x={msg.xcoord}
+          data-y={msg.ycoord}
+          width={msg.width}
+          height={msg.height}
+          href={msg.dataURL}
+          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
+        />
+      ));
   };
 
   return (
@@ -92,6 +249,7 @@ function Worldmap() {
       >
         <g onClick={(e) => handleContinentClick(e)} className="Asia" id="asia">
           <Asia />
+          {renderMessagesAsia()}
         </g>
         <g
           onClick={(e) => handleContinentClick(e)}
@@ -99,6 +257,7 @@ function Worldmap() {
           id="africa"
         >
           <Africa />
+          {renderMessagesAfrica()}
         </g>
         <g
           onClick={(e) => handleContinentClick(e)}
@@ -106,6 +265,7 @@ function Worldmap() {
           id="europe"
         >
           <Europe />
+          {renderMessagesEurope()}
         </g>
         <g
           onClick={(e) => handleContinentClick(e)}
@@ -113,6 +273,7 @@ function Worldmap() {
           id="middle-east"
         >
           <MiddleEast />
+          {renderMessagesMiddleEast()}
         </g>
         <g
           onClick={(e) => handleContinentClick(e)}
@@ -120,6 +281,7 @@ function Worldmap() {
           id="north-america"
         >
           <NorthAmerica />
+          {renderMessagesNorthAmerica()}
         </g>
         <g
           onClick={(e) => handleContinentClick(e)}
@@ -127,6 +289,7 @@ function Worldmap() {
           id="latin-america"
         >
           <LatinAmerica />
+          {renderMessagesLatinAmerica()}
         </g>
         <g
           onClick={(e) => handleContinentClick(e)}
@@ -134,8 +297,11 @@ function Worldmap() {
           id="australasia"
         >
           <Australasia />
+          {renderMessagesAustralasia()}
         </g>
       </svg>
+      {/* ------------------------ RENDER MESSAGES ------------------------ */}
+
       {/* -------------------------- IADMFR LOGO -------------------------- */}
       <IADMFR_LOGO />
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
@@ -154,6 +320,8 @@ function Worldmap() {
           setDrawingMode={setDrawingMode}
           svgRef={svgRef}
           setCurrentMessage={setCurrentMessage}
+          setDataUrl={setDataUrl}
+          zoomFactor={zoomFactor}
         />
       )}
       {currentStep === steps.messagePlacing && (
@@ -162,6 +330,8 @@ function Worldmap() {
           nextStep={nextStep}
           svgRef={svgRef}
           currentMessage={currentMessage}
+          dataUrl={dataUrl}
+          currentContinent={currentContinent}
         />
       )}
       {/* ---------------------- DEBUGGING COMPONENTS ---------------------- */}
@@ -176,11 +346,11 @@ function Worldmap() {
       >
         {`Drawingmode: ${drawingMode} `}
         <br />
-        {` ViewBox: ${viewBox}`}
+        {`ViewBox: ${viewBox}`}
         <br />
-        {` Continent: ${currentContinent}`}
+        {`Continent: ${currentContinent}`}
         <br />
-        {` Step: ${currentStep}`}
+        {`Step: ${currentStep}`}
       </a>
     </div>
   );

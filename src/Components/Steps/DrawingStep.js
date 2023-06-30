@@ -1,21 +1,7 @@
 import React, { useRef } from "react";
 import Canvas from "../Canvas";
-import pushToDb from "../../Database/requests";
+
 import interact from "interactjs";
-
-// Drag move event listener
-    function dragMoveListener(event) {
-      const target = event.target;
-      const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
-      const y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
-
-      // Translate the dragged object
-      target.style.transform = `translate(${x}px, ${y}px)`;
-
-      // Store the object's position
-      target.setAttribute("data-x", x);
-      target.setAttribute("data-y", y);
-    }
 
 function DrawingStep({
   handleReturnClick,
@@ -23,9 +9,29 @@ function DrawingStep({
   setDrawingMode,
   svgRef,
   setCurrentMessage,
-  currentContinent
+  currentContinent,
+  setDataUrl,
+  zoomFactor,
 }) {
   const canvasRef = useRef(null);
+
+  // Drag move event listener
+  function dragMoveListener(event) {
+    const target = event.target;
+    console.log(zoomFactor)
+    console.log(event.dx)
+    const x =
+      (parseFloat(target.getAttribute("data-x")) || 0) + event.dx * zoomFactor;
+    const y =
+      (parseFloat(target.getAttribute("data-y")) || 0) + event.dy * zoomFactor;
+
+    // Translate the dragged object
+    target.style.transform = `translate(${x}px, ${y}px)`;
+
+    // Store the object's position
+    target.setAttribute("data-x", x);
+    target.setAttribute("data-y", y);
+  }
 
   // Confirm the sketched message
   const handleConfirmMessageClick = async (e) => {
@@ -33,15 +39,19 @@ function DrawingStep({
 
     const canvas = document.getElementById("canvas");
     const dataURL = canvas.toDataURL("image/png");
+    setDataUrl(dataURL);
 
     // Create the <image> element
-    var imageElement = document.createElementNS("http://www.w3.org/2000/svg", "image");
+    var imageElement = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "image"
+    );
 
     // Set the necessary attributes
     imageElement.setAttribute("x", "0");
     imageElement.setAttribute("y", "0");
-    imageElement.setAttribute("width", "400");
-    imageElement.setAttribute("height", "300");
+    imageElement.setAttribute("width", "200");
+    imageElement.setAttribute("height", "100");
 
     // Set the href attribute to the Data URL
     imageElement.setAttribute("href", dataURL);
