@@ -1,7 +1,32 @@
+import React, { useRef } from "react";
+import { gsap } from "gsap";
+import { BASE_VIEWBOX, ANIMATION_DURATION } from "../../constants";
+import interact from "interactjs";
+
 function PlacementStep({
-  handleConfirmPlacementClick,
-  handleReturnClick
+  handleReturnClick,
+  nextStep,
+  svgRef,
+  currentMessage
 }) {
+
+    /*
+    STEP IV: CONFIRM MESSAGE PLACEMENT
+  */
+  const handleConfirmPlacementClick = async (e) => {
+      
+      console.log(currentMessage)
+      // interact(currentMessage).draggable("unset");
+      currentMessage.style.pointerEvents = "none";
+      
+
+      gsap.to(svgRef.current, {
+        duration: ANIMATION_DURATION,
+        attr: { viewBox: BASE_VIEWBOX },
+      });
+      nextStep();
+  };
+
   return (
     <>
       <a style={confirmationTextStyle}>{`Place your message on the continent.`}</a>

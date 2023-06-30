@@ -29,6 +29,34 @@ canvas {
   z-index: 3;
 }
 
+/** DRAGABLE OBJECT **/
+.draggable-object {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/** CONFIRMATION STEP **/
+.confirmation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* text-align: center; */
+  height: 100vh;
+  width: 100vw;
+  }
+
+.confirmation-text {
+  color: white;
+  font-size: large;
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+}
+
 .confirmMessageButton {
   position: absolute;
   bottom: 10px;
@@ -53,7 +81,9 @@ canvas {
   height: 50px;
 }
 
+/** SVG WORLDMAP **/
 svg g {
+  position: relative;
   fill: #64020e;
   stroke: #64020e;
   stroke-width: 1.5;
@@ -65,6 +95,10 @@ svg g:hover {
   stroke-width: 1.5;
   transition: 0.6s;
   cursor: pointer;
+}
+
+.disabled {
+  cursor: none;
 }
 
 /* svg path {
@@ -96,3 +130,4 @@ h1 {
 .iadmfr-logo {
   width: 150pt;
 }
+

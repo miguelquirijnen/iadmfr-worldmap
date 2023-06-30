@@ -32,7 +32,7 @@ app.get("/", async (req, resp) => {
   resp.send("IADMFR Worldmap backend is Working");
 });
 
-app.post("/post-message", async (req, resp) => {
+app.post("/message", async (req, resp) => {
     const request = req.body
     
     const newMessage = new Message({
@@ -40,8 +40,12 @@ app.post("/post-message", async (req, resp) => {
         svgData: request.data,
         contentType: 'image/svg+xml'
     })
-    newMessage.save();
+    // newMessage.save();
     console.log("Message posted")
+});
+
+app.get("/message", async (req, resp) => {
+    resp.send({data: 'answerr'})
 });
 
 app.listen(5000);

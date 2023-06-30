@@ -4,21 +4,12 @@ function ContinentConfirmationStep({
   handleReturnClick
 }) {
   return (
-    <>
-      <a style={confirmationTextStyle}>{`Confirm ${currentContinent}?`}</a>
+    <div className="confirmation-container">
+      <h2 className="confirmation-text">{`Confirm ${currentContinent}?`}</h2>
       <button className="confirmContinentButton" onClick={(e) => handleConfirmContinentClick(e)} >Confirm continent</button>
       <button className="returnButton" onClick={(e) => handleReturnClick(e)} >Return</button>
-    </>
+    </div>
   )
-}
-
-const confirmationTextStyle = {
-  color: "white",
-  fontSize: "large",
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  marginRight: "-50%",
 }
 
 export default ContinentConfirmationStep

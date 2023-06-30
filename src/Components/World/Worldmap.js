@@ -15,80 +15,53 @@ import { useState } from "react";
 import ContinentConfirmationStep from "../Steps/ContinentConfirmation";
 import DrawingStep from "../Steps/DrawingStep";
 import PlacementStep from "../Steps/PlacementStep";
-
-
-// Declaration of all the constants
-const BASE_VIEWBOX = "0 0 2000 857"
-const ANIMATION_DURATION = 0.5 // in seconds
-
-const steps = {
-  continentSelection: 0,
-  continentConfirmation: 1,
-  messageDrawing: 2,
-  messagePlacing: 3,
-}
+import { BASE_VIEWBOX, ANIMATION_DURATION, steps, VIEWBOXES} from "../../constants";
 
 function Worldmap() {
-  const [viewBox, setViewBox] = useState(BASE_VIEWBOX)
-  const [drawingMode, setDrawingMode] = useState(false)
-  const [msgInProgress, setMsgInProgress] = useState(false)
+  const [viewBox, setViewBox] = useState(BASE_VIEWBOX);
+  const [drawingMode, setDrawingMode] = useState(false);
+  const [msgInProgress, setMsgInProgress] = useState(false);
   const [currentContinent, setCurrentContinent] = useState("");
-  const [currentStep, setCurrentStep] = useState(steps.continentSelection)
+  const [currentStep, setCurrentStep] = useState(steps.continentSelection);
+  const [currentMessage, setCurrentMessage] = useState();
 
   const svgRef = useRef(null);
-  const canvasRef = useRef(null);
+
+  const nextStep = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setCurrentStep(0);
+    }
+  };
 
   /* 
-    STEP 1: CLICK ON CONTINENT
+    STEP I: CLICK ON CONTINENT
   */
   const handleContinentClick = async (e) => {
+    console.log(currentStep)
     if (currentStep !== steps.continentSelection) return;
-    const continent = e.currentTarget
+    const continent = e.currentTarget;
+    
+    const newViewBox = VIEWBOXES[continent.id]
+    console.log("newViewBox = " + newViewBox + " / " + continent.id)
 
-    const gBox = continent.getBBox();
-    const newViewBox = `${gBox.x} ${gBox.y} ${gBox.width} ${gBox.height}`;
-    gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: newViewBox } });
+    gsap.to(svgRef.current, {
+      duration: ANIMATION_DURATION,
+      attr: { viewBox: newViewBox },
+    });
 
-    setCurrentStep(steps.continentConfirmation)
+    setCurrentStep(steps.continentConfirmation);
     setCurrentContinent(continent.id);
-  }
+  };
 
   /*
-    STEP 2: CONFIRM SELECTED CONTINENT
+    STEP II: CONFIRM SELECTED CONTINENT
   */
   const handleConfirmContinentClick = (e) => {
     setCurrentStep(steps.messageDrawing);
     setDrawingMode(true);
-  }
-
-  /*
-    STEP 3: CONFIRM MESSAGE CONTENT
-  */
-  const handleConfirmMessageClick = async (e) => {
-    setDrawingMode(false);
-
-    const canvas = document.getElementById("canvas");
-    const dataURL = canvas.toDataURL('image/png');
- 
-    fetch(
-      'http://localhost:5000/post-message', {
-          method: "post",
-          body: JSON.stringify({ data: dataURL}),
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      })
-
-    setCurrentStep(steps.messagePlacing);
-  }
-
-  /*
-    STEP 3: CONFIRM MESSAGE PLACEMENT
-  */
-  const handleConfirmPlacementClick = (e) => {
-    setCurrentStep(steps.continentSelection);
-    gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: BASE_VIEWBOX } });
-  }
+  };
 
   /*
     RETURN TO BASE WORLD MAP
@@ -96,11 +69,14 @@ function Worldmap() {
   const handleReturnClick = (e) => {
     setDrawingMode(false);
     setMsgInProgress(false);
-    setCurrentStep(steps.continentSelection)
+    setCurrentStep(steps.continentSelection);
     setCurrentContinent("");
 
-    gsap.to(svgRef.current, { duration: ANIMATION_DURATION, attr: { viewBox: BASE_VIEWBOX } });
-  }
+    gsap.to(svgRef.current, {
+      duration: ANIMATION_DURATION,
+      attr: { viewBox: BASE_VIEWBOX },
+    });
+  };
 
   return (
     <div style={{ overflow: "hidden" }}>
@@ -117,49 +93,87 @@ function Worldmap() {
         <g onClick={(e) => handleContinentClick(e)} className="Asia" id="asia">
           <Asia />
         </g>
-        <g onClick={(e) => handleContinentClick(e)} className="Africa" id="africa">
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className="Africa disabled"
+          id="africa"
+        >
           <Africa />
         </g>
-        <g onClick={(e) => handleContinentClick(e)} className="Europe" id="europe">
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className="Europe"
+          id="europe"
+        >
           <Europe />
         </g>
-        <g onClick={(e) => handleContinentClick(e)} className="MiddleEast" id="middle-east">
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className="MiddleEast"
+          id="middle-east"
+        >
           <MiddleEast />
         </g>
-        <g onClick={(e) => handleContinentClick(e)} className="NorthAmerica" id="north-america">
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className="NorthAmerica"
+          id="north-america"
+        >
           <NorthAmerica />
         </g>
-        <g onClick={(e) => handleContinentClick(e)} className="LatinAmerica" id="latin-america">
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className="LatinAmerica"
+          id="latin-america"
+        >
           <LatinAmerica />
         </g>
-        <g onClick={(e) => handleContinentClick(e)} className="Australasia" id="australasia">
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className="Australasia"
+          id="australasia"
+        >
           <Australasia />
         </g>
       </svg>
       {/* -------------------------- IADMFR LOGO -------------------------- */}
-      <div className="logoBox">
-        <IADMFR_LOGO />
-      </div>
+      <IADMFR_LOGO />
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
-      {currentStep === steps.continentConfirmation &&
+      {currentStep === steps.continentConfirmation && (
         <ContinentConfirmationStep
           currentContinent={currentContinent}
           handleConfirmContinentClick={handleConfirmContinentClick}
           handleReturnClick={handleReturnClick}
-        />}
-      {currentStep === steps.messageDrawing &&
+        />
+      )}
+      {currentStep === steps.messageDrawing && (
         <DrawingStep
-          canvasRef={canvasRef}
-          handleConfirmMessageClick={handleConfirmMessageClick}
           handleReturnClick={handleReturnClick}
-        />}
-      {currentStep === steps.messagePlacing &&
+          currentContinent={currentContinent}
+          nextStep={nextStep}
+          setDrawingMode={setDrawingMode}
+          svgRef={svgRef}
+          setCurrentMessage={setCurrentMessage}
+        />
+      )}
+      {currentStep === steps.messagePlacing && (
         <PlacementStep
-          handleConfirmPlacementClick={handleConfirmPlacementClick}
           handleReturnClick={handleReturnClick}
-        />}
+          nextStep={nextStep}
+          svgRef={svgRef}
+          currentMessage={currentMessage}
+        />
+      )}
       {/* ---------------------- DEBUGGING COMPONENTS ---------------------- */}
-      <a style={{ position: "absolute", bottom: "10px", right: "600px", width: "300px", height: "100px" }}>
+      <a
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          right: "600px",
+          width: "300px",
+          height: "100px",
+        }}
+      >
         {`Drawingmode: ${drawingMode} `}
         <br />
         {` ViewBox: ${viewBox}`}
