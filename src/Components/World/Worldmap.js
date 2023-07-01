@@ -85,7 +85,7 @@ function Worldmap() {
     setCurrentStep(steps.messageDrawing);
     setDrawingMode(true);
   };
-  
+
   // RETURN CLICK
   const handleReturnClick = (e) => {
     setDrawingMode(false);
@@ -111,7 +111,6 @@ function Worldmap() {
     });
   };
 
-
   // MESSAGE MGMT
   useEffect(() => {
     fetchMessages()
@@ -121,22 +120,26 @@ function Worldmap() {
       .catch((error) => console.error(error));
   }, [currentStep]);
 
-  const renderMessages = (cont) => {
-    return messages
-      .filter((msg) => msg.continent == cont)
-      .map((msg) => (
-        <image
-          key={msg.id}
-          x={0}
-          y={0}
-          data-x={msg.xcoord}
-          data-y={msg.ycoord}
-          width={msg.width}
-          height={msg.height}
-          href={msg.dataURL}
-          style={{ transform: `translate(${msg.xcoord}px, ${msg.ycoord}px)` }}
-        />
-      ));
+  const renderMessages = () => {
+    return (
+      messages
+        // .filter((msg) => msg.continent == cont)
+        .map((msg) => {
+          return (
+            <image
+              key={msg.id}
+              className="message"
+              style={{
+                x: `${msg.xcoord}px`,
+                y: `${msg.ycoord}px`,
+                width: `${msg.width}px`,
+                height: `${msg.height}px`,
+              }}
+              href={msg.dataURL}
+            />
+          );
+        })
+    );
   };
 
   // DETERMINE CONTINENT CLASSNAMES
@@ -149,27 +152,24 @@ function Worldmap() {
   // RENDER CONTINENTS
   const renderContinents = () => {
     const groupElements = continents.map((c) => (
-      <g
-        onClick={(e) => handleContinentClick(e)}
-        className={classNameContinent(c.id)}
-        id={c.id}
-      >
-        {c.component}
-        {renderMessages(c.id)}
-      </g>
+      <>
+        <g
+          onClick={(e) => handleContinentClick(e)}
+          className={classNameContinent(c.id)}
+          id={c.id}
+          key={c.id}
+        >
+          {c.component}
+          {renderMessages(c.id)}
+        </g>
+      </>
     ));
     return (
-      <svg
-        ref={svgRef}
-        baseProfile="tiny"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="worldmap"
-        id="worldmap"
-        viewBox={viewBox}
-      >
-        {groupElements}
-      </svg>
+      <div className="svg-container">
+        <svg ref={svgRef} className="worldmap" id="worldmap" viewBox={viewBox}>
+          {groupElements}
+        </svg>
+      </div>
     );
   };
 

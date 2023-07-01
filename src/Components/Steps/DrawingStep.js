@@ -29,22 +29,18 @@ function DrawingStep({
     var imageElement = document.createElementNS(svgNS, "image");
 
     // Set the necessary attributes
-    imageElement.setAttribute("x", START_POSITIONS[currentContinent][0]);
-    imageElement.setAttribute("y", START_POSITIONS[currentContinent][1]);
-    imageElement.setAttribute("width", "150");
-    imageElement.setAttribute("height", "80");
-    imageElement.setAttribute("position", "absolute");
-
-    // Set the red border
-    imageElement.setAttribute("stroke", "red");
-    imageElement.setAttribute("stroke-width", "2");
+    imageElement.style.zIndex = "1999";
+    imageElement.style.width = "150";
+    imageElement.style.height = "80";
+    imageElement.style.x = START_POSITIONS[currentContinent][0];
+    imageElement.style.y = START_POSITIONS[currentContinent][1];
 
     // Set the href attribute to the Data URL
     imageElement.setAttribute("href", dataURL);
 
     // Get a reference to the group element
     var contElement = document.getElementById(currentContinent);
-    console.log(contElement.id)
+    console.log(contElement.id);
     contElement.appendChild(imageElement);
 
     // Get a reference to the root <svg> element

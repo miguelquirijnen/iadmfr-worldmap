@@ -30,10 +30,10 @@ export const VIEWBOXES = {
 };
 
 export const START_POSITIONS = {
-  africa: ["-30", "500"],
+  africa: ["1000", "100"],
   asia: ["510", "165"],
   australasia: ["700", "630"],
-  europe: ["0", "0"],
+  europe: ["1000", "200"],
   "middle-east": ["150", "300"],
   "north-america": ["-450", "150"],
   "latin-america": ["-320", "500"],

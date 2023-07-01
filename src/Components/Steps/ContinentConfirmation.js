@@ -6,7 +6,7 @@ function ContinentConfirmationStep({
   handleReturnClick,
 }) {
   const questionText = `Leave a message from ${CONTINENT_NAMES[currentContinent]}?`;
-  const confirmText = `Yes!`;
+  const confirmText = `Yes, continue!`;
   const returnText = `No, return`;
 
   return (
@@ -28,7 +28,6 @@ function ContinentConfirmationStep({
 }
 
 /* -------------------- STYLE COMPONENTS ------------- */
-
 const confirmationContainerStyle = {
   display: "flex",
   flexDirection: "column",
@@ -42,7 +41,6 @@ const confirmationContainerStyle = {
 
   height: "auto",
   width: "auto",
-
 };
 
 const buttonContainerStyle = {
@@ -57,7 +55,7 @@ const textStyle = {
   fontSize: "3vh",
   fontWeight: "bold",
   textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
-  cursor: "default"
+  cursor: "default",
 };
 
 export default ContinentConfirmationStep;

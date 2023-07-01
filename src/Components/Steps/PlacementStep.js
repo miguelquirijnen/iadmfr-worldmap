@@ -4,6 +4,7 @@ import {
   BASE_VIEWBOX,
   ANIMATION_DURATION,
   DRAG_FACTORS,
+  START_POSITIONS,
 } from "../../constants";
 import interact from "interactjs";
 import { pushToDb } from "../../Database/requests";
@@ -23,16 +24,13 @@ function PlacementStep({
     const factor = (1 / zoomFactor) * DRAG_FACTORS[currentContinent];
 
     const x =
-      (parseFloat(target.getAttribute("data-x")) || 0) + event.dx * factor;
+      (parseFloat(target.style.x) || 0) + event.dx * factor;
     const y =
-      (parseFloat(target.getAttribute("data-y")) || 0) + event.dy * factor;
-
-    // Translate the dragged object
-    target.style.transform = `translate(${x}px, ${y}px)`;
+      (parseFloat(target.style.y) || 0) + event.dy * factor;
 
     // Store the object's position
-    target.setAttribute("data-x", x);
-    target.setAttribute("data-y", y);
+    target.style.x = x
+    target.style.y = y
   }
 
   // Enable draggability on the draggable object
@@ -42,40 +40,51 @@ function PlacementStep({
     },
   });
 
+  // Confirm the placement of the object
   const handleConfirmPlacementClick = async (e) => {
     gsap.to(svgRef.current, {
       duration: ANIMATION_DURATION,
       attr: { viewBox: BASE_VIEWBOX },
     });
 
+    const widthString = currentMessage.style.width;
+    const heightString = currentMessage.style.height;
+
     pushToDb(
       dataUrl,
-      currentMessage.getAttribute("data-x"),
-      currentMessage.getAttribute("data-y"),
-      currentMessage.getAttribute("width"),
-      currentMessage.getAttribute("height"),
+      currentMessage.style.x,
+      currentMessage.style.y,
+      widthString.substr(0, widthString.length-2),
+      heightString.substr(0, heightString.length-2),
       currentContinent
     );
 
     nextStep();
 
     currentMessage.remove();
+    window.location.reload();
   };
 
   const zoomObjectIn = () => {
-    const initWidth = currentMessage.getAttribute("width");
-    const initHeight = currentMessage.getAttribute("height");
+    const initWidthStr = currentMessage.style.width
+    const initHeightStr = currentMessage.style.height
 
-    currentMessage.setAttribute("width", initWidth * 1.1);
-    currentMessage.setAttribute("height", initHeight * 1.1);
+    const initWidth = parseFloat(initWidthStr.substr(0, initWidthStr.length-2))
+    const initHeight = parseFloat(initHeightStr.substr(0, initHeightStr.length-2))
+
+    currentMessage.style.width = initWidth * 1.1;
+    currentMessage.style.height = initHeight * 1.1;
   };
 
   const zoomObjectOut = () => {
-    const initWidth = currentMessage.getAttribute("width");
-    const initHeight = currentMessage.getAttribute("height");
+    const initWidthStr = currentMessage.style.width
+    const initHeightStr = currentMessage.style.height
 
-    currentMessage.setAttribute("width", initWidth / 1.1);
-    currentMessage.setAttribute("height", initHeight / 1.1);
+    const initWidth = parseFloat(initWidthStr.substr(0, initWidthStr.length-2))
+    const initHeight = parseFloat(initHeightStr.substr(0, initHeightStr.length-2))
+
+    currentMessage.style.width = initWidth / 1.1;
+    currentMessage.style.height = initHeight / 1.1;
   };
 
   const instructionText = `Place your message on the continent.`;
@@ -86,7 +95,16 @@ function PlacementStep({
   const zoomOut = `-`;
 
   return (
-    <div >
+    <div>
+      <image
+        x={START_POSITIONS[currentContinent][0]}
+        y={START_POSITIONS[currentContinent][1]}
+        width={150}
+        height={80}
+        stroke="red"
+        strokeWidth="2"
+        href={dataUrl}
+      />
       <h2 style={textStyle}>{instructionText}</h2>
 
       <div style={zoomContainerStyle}>

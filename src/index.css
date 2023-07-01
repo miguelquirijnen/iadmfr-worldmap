@@ -25,7 +25,15 @@ canvas {
   overflow-y: hidden;
 }
 
+.worldmap-container {
+  position: absolute;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+
 .worldmap {
+  position: "absolute";
   height: 100vh;
   margin: auto;
   display: block;
@@ -132,6 +140,29 @@ canvas {
   cursor: pointer;
 }
 
+.svg-container {
+  width: "100vw";
+}
+
+
+
+.img-container {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100vw;
+  height: 100vh;
+}
+
+
+.message-group {
+  width: "100vw";
+}
+
+.message {
+  cursor: default;
+  z-index: 999;
+}
 
 /* svg path {
   fill: #64020e;
@@ -163,3 +194,4 @@ h1 {
   width: 150pt;
   fill: #64020e;
 }
+
