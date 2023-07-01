@@ -9,14 +9,6 @@ try {
   console.log("could not connect");
 }
 
-/**
- *       data: dataURL,
-      xcoord: x,
-      ycoord: y,
-      width: w,
-      height: h,
-      date: new Date(),
- */
 const yourSchema = new mongoose.Schema({
   dataURL: String,
   xcoord: String,

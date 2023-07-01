@@ -9,6 +9,16 @@ export const steps = {
   messagePlacing: 3,
 };
 
+export const CONTINENT_NAMES = {
+  africa: "Africa",
+  asia: "Asia",
+  australasia: "Australasia",
+  europe: "Europe",
+  "middle-east": "Middle-East",
+  "north-america": "North-America",
+  "latin-america": "Latin-America",
+};
+
 export const VIEWBOXES = {
   africa: "840 330 500 400",
   asia: "1000 0 800 600",
@@ -16,5 +26,27 @@ export const VIEWBOXES = {
   europe: "850 10 360 275",
   "middle-east": "890 150 600 300",
   "north-america": "170 0 780 400",
-  "latin-america": "350 280 440 580"
-}
+  "latin-america": "350 280 440 580",
+};
+
+export const START_POSITIONS = {
+  africa: ["-30", "500"],
+  asia: ["510", "165"],
+  australasia: ["700", "630"],
+  europe: ["0", "0"],
+  "middle-east": ["150", "300"],
+  "north-america": ["-450", "150"],
+  "latin-america": ["-320", "500"],
+};
+
+export const DRAG_FACTORS = {
+  africa: 1.5,
+  asia: 1.5,
+  australasia: 1.5,
+  europe: 1.5,
+  "middle-east": 1,
+  "north-america": 1,
+  "latin-america": 2.5,
+};
+
+export const svgNS = "http://www.w3.org/2000/svg";

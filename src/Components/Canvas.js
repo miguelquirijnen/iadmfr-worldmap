@@ -1,27 +1,32 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from "react";
 
 const WIDTH_VW_FACTOR = 50;
 const HEIGHT_VH_FACTOR = 50;
 
-const Canvas = ({width, height}) => {
+const Canvas = ({ width, height }) => {
   const [drawing, setDrawing] = useState(false);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
-    
-    canvas.width = document.documentElement.clientWidth * (WIDTH_VW_FACTOR/100)
-    canvas.height = document.documentElement.clientHeight * (HEIGHT_VH_FACTOR/100)
+
+    canvas.width =
+      document.body.getBoundingClientRect().width * (WIDTH_VW_FACTOR / 100);
+    canvas.height =
+      document.body.getBoundingClientRect().height * (HEIGHT_VH_FACTOR / 100);
+
+    // canvas.width = document.documentElement.clientWidth * (WIDTH_VW_FACTOR/100)
+    // canvas.height = document.documentElement.clientHeight * (HEIGHT_VH_FACTOR/100)
 
     canvas.style.width = `${WIDTH_VW_FACTOR}vw`;
     canvas.style.height = `${HEIGHT_VH_FACTOR}vh`;
 
     // Setting the context to enable us draw
-    const ctx = canvas.getContext('2d');
-    
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = 'white';
+    const ctx = canvas.getContext("2d");
+
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "white";
     ctx.lineWidth = 3;
     ctxRef.current = ctx;
   }, []);
@@ -34,7 +39,7 @@ const Canvas = ({width, height}) => {
     setDrawing(true);
   };
 
-  // Stop drawing 
+  // Stop drawing
   const stopDraw = () => {
     ctxRef.current.closePath();
     setDrawing(false);
@@ -57,9 +62,12 @@ const Canvas = ({width, height}) => {
       canvasRef.current.height
     );
   };
-  
+
   return (
     <>
+      <div style={textContainerStyle}>
+        <p style={textStyle}>Write your message here!</p>
+      </div>
       <canvas
         onMouseDown={startDraw}
         onMouseUp={stopDraw}
@@ -70,18 +78,37 @@ const Canvas = ({width, height}) => {
       />
     </>
   );
-}
+};
 
 const canvasStyle = {
   border: "1 px solid black",
   backgroundColor: "rgba(128, 0, 32,0.8)",
+  borderRadius: "10px", // Add round border
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", // Add shadow effect
   position: "absolute",
   width: `${WIDTH_VW_FACTOR}vw`,
   height: `${HEIGHT_VH_FACTOR}vh`,
   top: "50%",
   left: "50%",
   marginRight: "-50%",
-  transform: "translate(-50%, -50%)"
-}
+  transform: "translate(-50%, -50%)",
+};
+
+const textContainerStyle = {
+  position: "absolute",
+  top: "20%",
+  left: "50%",
+  transform: "translateX(-50%)",
+  textAlign: "center",
+  width: "100%"
+};
+
+
+const textStyle = {
+  color: "white",
+  fontSize: "3vh",
+  fontWeight: "bold",
+  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)"
+};
 
 export default Canvas;

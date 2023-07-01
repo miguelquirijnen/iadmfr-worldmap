@@ -1,13 +1,11 @@
 // Upload the message sketch to the database
 export async function pushToDb(data, x, y, w, h, continent) {
-  console.log("posting: ", x, y, w, h, continent);
-
-  const res = await fetch("http://localhost:5000/message", {
+  await fetch("http://localhost:5000/message", {
     method: "post",
     body: JSON.stringify({
       dataURL: data,
-      xcoord: x,
-      ycoord: y,
+      xcoord: x || 0,
+      ycoord: y || 0,
       width: w,
       height: h,
       continent: continent,
@@ -17,8 +15,6 @@ export async function pushToDb(data, x, y, w, h, continent) {
       "Content-Type": "application/json",
     },
   });
-
-  console.log((await res.json()) + " - " + new Date());
 }
 
 // Get all message sketches from the database

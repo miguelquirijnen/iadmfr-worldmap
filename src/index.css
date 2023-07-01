@@ -2,60 +2,48 @@
 * {
   margin: 0;
   padding: 0;
-  width:100vw; 
+  width: 100vw;
 }
 
 body {
   margin: auto;
   height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 canvas {
   stroke: #64020e;
-  stroke-width: .25;
+  stroke-width: 0.25;
 }
 
 .wrapper {
   height: 100vh;
   width: 100vw;
   background-color: #d6cfd1;
-
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .worldmap {
   height: 100vh;
-  margin:auto; 
-  display:block;
+  margin: auto;
+  display: block;
   z-index: 3;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 /** DRAGABLE OBJECT **/
 .draggable-object {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-
 
 /** CONFIRMATION STEP **/
-.confirmation-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  /* text-align: center; */
-  height: 100vh;
-  width: 100vw;
-  }
 
-.confirmation-text {
-  color: white;
-  font-size: large;
-  position: absolute;
-  bottom: 50%;
-  left: 50%;
-}
 
 .confirmMessageButton {
   position: absolute;
@@ -73,6 +61,36 @@ canvas {
   height: 50px;
 }
 
+
+
+.button {
+  margin: 10px;
+  width: auto;
+  background: #64020e;
+  border-radius: 11px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 33.4929px;
+  padding: .8em 1em;
+  text-align: center;
+  text-decoration: none;
+  text-decoration-skip-ink: auto;
+  text-shadow: rgba(0, 0, 0, .3) 1px 1px 1px;
+  text-underline-offset: 1px;
+  transition: all .2s ease-in-out;
+  touch-action: manipulation;
+  word-break: break-word;
+  border: 0; 
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.button:hover {
+  background: #280106;
+}
+
 .returnButton {
   position: absolute;
   bottom: 10px;
@@ -81,15 +99,32 @@ canvas {
   height: 50px;
 }
 
+
 /** SVG WORLDMAP **/
-svg g {
+.continent {
   position: relative;
   fill: #64020e;
   stroke: #64020e;
   stroke-width: 1.5;
 }
 
-svg g:hover {
+.continent-selected {
+  position: relative;
+  fill: #280106;
+  stroke: #280106;
+  stroke-width: 1.5;
+  cursor: none;
+}
+
+.continent-unselected {
+  position: relative;
+  fill: #64020e;
+  stroke: #64020e;
+  stroke-width: 1.5;
+  cursor: none;
+}
+
+.continent:hover {
   fill: #280106;
   stroke: #280106;
   stroke-width: 1.5;
@@ -97,9 +132,6 @@ svg g:hover {
   cursor: pointer;
 }
 
-.disabled {
-  cursor: none;
-}
 
 /* svg path {
   fill: #64020e;
@@ -118,7 +150,7 @@ h1 {
 }
 
 .logoBox {
-  position:absolute;
+  position: absolute;
   bottom: 5px;
   left: 10px;
   margin-left: 40px;
@@ -130,4 +162,3 @@ h1 {
 .iadmfr-logo {
   width: 150pt;
 }
-

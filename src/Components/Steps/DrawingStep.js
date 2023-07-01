@@ -3,6 +3,8 @@ import Canvas from "../Canvas";
 
 import interact from "interactjs";
 
+import { START_POSITIONS, svgNS, DRAG_FACTORS } from "../../constants";
+
 function DrawingStep({
   handleReturnClick,
   nextStep,
@@ -18,12 +20,12 @@ function DrawingStep({
   // Drag move event listener
   function dragMoveListener(event) {
     const target = event.target;
-    console.log(zoomFactor)
-    console.log(event.dx)
+    const factor = (1 / zoomFactor) * DRAG_FACTORS[currentContinent];
+
     const x =
-      (parseFloat(target.getAttribute("data-x")) || 0) + event.dx * zoomFactor;
+      (parseFloat(target.getAttribute("data-x")) || 0) + event.dx * factor;
     const y =
-      (parseFloat(target.getAttribute("data-y")) || 0) + event.dy * zoomFactor;
+      (parseFloat(target.getAttribute("data-y")) || 0) + event.dy * factor;
 
     // Translate the dragged object
     target.style.transform = `translate(${x}px, ${y}px)`;
@@ -42,16 +44,17 @@ function DrawingStep({
     setDataUrl(dataURL);
 
     // Create the <image> element
-    var imageElement = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "image"
-    );
+    var imageElement = document.createElementNS(svgNS, "image");
 
     // Set the necessary attributes
-    imageElement.setAttribute("x", "0");
-    imageElement.setAttribute("y", "0");
-    imageElement.setAttribute("width", "200");
-    imageElement.setAttribute("height", "100");
+    imageElement.setAttribute("x", START_POSITIONS[currentContinent][0]);
+    imageElement.setAttribute("y", START_POSITIONS[currentContinent][1]);
+    imageElement.setAttribute("width", "150");
+    imageElement.setAttribute("height", "80");
+
+    // Set the red border
+    imageElement.setAttribute("stroke", "red");
+    imageElement.setAttribute("stroke-width", "2");
 
     // Set the href attribute to the Data URL
     imageElement.setAttribute("href", dataURL);
