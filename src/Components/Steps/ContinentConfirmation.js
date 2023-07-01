@@ -5,36 +5,6 @@ function ContinentConfirmationStep({
   handleConfirmContinentClick,
   handleReturnClick,
 }) {
-  /* -------------------- STYLE COMPONENTS ------------- */
-
-  const confirmationContainerStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "100vh",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    maxWidth: "60%",
-  };
-
-  const buttonContainerStyle = {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "20px",
-  };
-
-  const textStyle = {
-    textAlign: "center",
-    color: "white",
-    fontSize: "3vh",
-    fontWeight: "bold",
-    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
-  };
-  
   const questionText = `Leave a message from ${CONTINENT_NAMES[currentContinent]}?`;
   const confirmText = `Yes!`;
   const returnText = `No, return`;
@@ -56,5 +26,38 @@ function ContinentConfirmationStep({
     </div>
   );
 }
+
+/* -------------------- STYLE COMPONENTS ------------- */
+
+const confirmationContainerStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  marginRight: "-50%",
+  transform: "translate(-50%, -50%)",
+
+  height: "auto",
+  width: "auto",
+
+};
+
+const buttonContainerStyle = {
+  display: "flex",
+  justifyContent: "center",
+  marginTop: "20px",
+};
+
+const textStyle = {
+  textAlign: "center",
+  color: "white",
+  fontSize: "3vh",
+  fontWeight: "bold",
+  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
+  cursor: "default"
+};
 
 export default ContinentConfirmationStep;

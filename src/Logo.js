@@ -9,7 +9,7 @@ export const IADMFR_LOGO = () => (
     >
       <g
         transform="translate(0.000000,1054.000000) scale(0.100000,-0.100000)"
-        fill="#000000"
+        fill="#64020e"
         stroke="none"
       >
         <path

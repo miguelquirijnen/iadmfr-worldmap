@@ -24,6 +24,16 @@ import {
 
 import { fetchMessages } from "../../Database/requests";
 
+const continents = [
+  { id: "asia", component: <Asia /> },
+  { id: "africa", component: <Africa /> },
+  { id: "europe", component: <Europe /> },
+  { id: "middle-east", component: <MiddleEast /> },
+  { id: "north-america", component: <NorthAmerica /> },
+  { id: "latin-america", component: <LatinAmerica /> },
+  { id: "australasia", component: <Australasia /> },
+];
+
 function Worldmap() {
   const [viewBox, setViewBox] = useState(BASE_VIEWBOX);
   const [drawingMode, setDrawingMode] = useState(false);
@@ -62,7 +72,7 @@ function Worldmap() {
         const currentWidth = parseFloat(currentDimensions[2]);
 
         setZoomFactor(initialWidth / currentWidth);
-        setViewBox( VIEWBOXES[continent.id])
+        setViewBox(VIEWBOXES[continent.id]);
       },
     });
 
@@ -75,17 +85,15 @@ function Worldmap() {
     setCurrentStep(steps.messageDrawing);
     setDrawingMode(true);
   };
-
-  // Handle return click
+  
+  // RETURN CLICK
   const handleReturnClick = (e) => {
     setDrawingMode(false);
     setMsgInProgress(false);
     setCurrentStep(steps.continentSelection);
     setCurrentContinent("");
 
-    if (currentMessage) {
-      currentMessage.remove();
-    }
+    if (currentMessage) currentMessage.remove();
 
     gsap.to(svgRef.current, {
       duration: ANIMATION_DURATION,
@@ -103,8 +111,9 @@ function Worldmap() {
     });
   };
 
+
+  // MESSAGE MGMT
   useEffect(() => {
-    // Fetch objects from the database
     fetchMessages()
       .then((data) => {
         setMessages(data);
@@ -130,18 +139,26 @@ function Worldmap() {
       ));
   };
 
+  // DETERMINE CONTINENT CLASSNAMES
   const classNameContinent = (continentName) => {
-    // First case, nothing selected, all clickable
     if (currentContinent == "") return "continent";
-    // This continent is selected, highlight it
     else if (currentContinent == continentName) return "continent-selected";
-    // Continent is not selected, make it disabled
-    return "continent-unselected"
-  }
+    return "continent-unselected";
+  };
 
-  return (
-    <div style={{ overflow: "hidden" }}>
-      {/* --------------------------- WORLDMAP --------------------------- */}
+  // RENDER CONTINENTS
+  const renderContinents = () => {
+    const groupElements = continents.map((c) => (
+      <g
+        onClick={(e) => handleContinentClick(e)}
+        className={classNameContinent(c.id)}
+        id={c.id}
+      >
+        {c.component}
+        {renderMessages(c.id)}
+      </g>
+    ));
+    return (
       <svg
         ref={svgRef}
         baseProfile="tiny"
@@ -151,63 +168,17 @@ function Worldmap() {
         id="worldmap"
         viewBox={viewBox}
       >
-        <g onClick={(e) => handleContinentClick(e)} className={classNameContinent("asia")} id="asia">
-          <Asia />
-          {renderMessages("asia")}
-        </g>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent("africa")}
-          id="africa"
-        >
-          <Africa />
-          {renderMessages("africa")}
-        </g>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent("europe")}
-          id="europe"
-        >
-          <Europe />
-          {renderMessages("europe")}
-        </g>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent("middle-east")}
-          id="middle-east"
-        >
-          <MiddleEast />
-          {renderMessages("middle-east")}
-        </g>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent("north-america")}
-          id="north-america"
-        >
-          <NorthAmerica />
-          {renderMessages("north-america")}
-        </g>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent("latin-america")}
-          id="latin-america"
-        >
-          <LatinAmerica />
-          {renderMessages("latin-america")}
-        </g>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent("australasia")}
-          id="australasia"
-        >
-          <Australasia />
-          {renderMessages("australasia")}
-        </g>
+        {groupElements}
       </svg>
-      {/* ------------------------ RENDER MESSAGES ------------------------ */}
+    );
+  };
 
+  return (
+    <div style={{ overflow: "hidden" }}>
+      {/* --------------------------- WORLDMAP --------------------------- */}
+      {renderContinents()}
       {/* -------------------------- IADMFR LOGO -------------------------- */}
-      <IADMFR_LOGO />
+      <IADMFR_LOGO className="iadmfr-logo" />
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
       {currentStep === steps.continentConfirmation && (
         <ContinentConfirmationStep
@@ -236,26 +207,9 @@ function Worldmap() {
           currentMessage={currentMessage}
           dataUrl={dataUrl}
           currentContinent={currentContinent}
+          zoomFactor={zoomFactor}
         />
       )}
-      {/* ---------------------- DEBUGGING COMPONENTS ---------------------- */}
-      <a
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          right: "600px",
-          width: "300px",
-          height: "100px",
-        }}
-      >
-        {`Drawingmode: ${drawingMode} `}
-        <br />
-        {`ViewBox: ${viewBox}`}
-        <br />
-        {`Continent: ${currentContinent}`}
-        <br />
-        {`Step: ${currentStep}`}
-      </a>
     </div>
   );
 }

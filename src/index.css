@@ -113,7 +113,7 @@ canvas {
   fill: #280106;
   stroke: #280106;
   stroke-width: 1.5;
-  cursor: none;
+  cursor: default;
 }
 
 .continent-unselected {
@@ -121,7 +121,7 @@ canvas {
   fill: #64020e;
   stroke: #64020e;
   stroke-width: 1.5;
-  cursor: none;
+  cursor: default;
 }
 
 .continent:hover {
@@ -161,4 +161,5 @@ h1 {
 
 .iadmfr-logo {
   width: 150pt;
+  fill: #64020e;
 }

@@ -64,19 +64,14 @@ const Canvas = ({ width, height }) => {
   };
 
   return (
-    <>
-      <div style={textContainerStyle}>
-        <p style={textStyle}>Write your message here!</p>
-      </div>
-      <canvas
-        onMouseDown={startDraw}
-        onMouseUp={stopDraw}
-        onMouseMove={draw}
-        ref={canvasRef}
-        style={canvasStyle}
-        id={"canvas"}
-      />
-    </>
+    <canvas
+      onMouseDown={startDraw}
+      onMouseUp={stopDraw}
+      onMouseMove={draw}
+      ref={canvasRef}
+      style={canvasStyle}
+      id={"canvas"}
+    />
   );
 };
 
@@ -85,30 +80,8 @@ const canvasStyle = {
   backgroundColor: "rgba(128, 0, 32,0.8)",
   borderRadius: "10px", // Add round border
   boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", // Add shadow effect
-  position: "absolute",
   width: `${WIDTH_VW_FACTOR}vw`,
   height: `${HEIGHT_VH_FACTOR}vh`,
-  top: "50%",
-  left: "50%",
-  marginRight: "-50%",
-  transform: "translate(-50%, -50%)",
-};
-
-const textContainerStyle = {
-  position: "absolute",
-  top: "20%",
-  left: "50%",
-  transform: "translateX(-50%)",
-  textAlign: "center",
-  width: "100%"
-};
-
-
-const textStyle = {
-  color: "white",
-  fontSize: "3vh",
-  fontWeight: "bold",
-  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)"
 };
 
 export default Canvas;
