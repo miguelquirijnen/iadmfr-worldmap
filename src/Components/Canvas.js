@@ -2,9 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 
 const WIDTH_VW_FACTOR = 50;
 const HEIGHT_VH_FACTOR = 50;
+const DEFAULT_BG = "rgba(100, 2, 14,1)";
+const CONTRAST_BG = "rgba(255,255,255,1)";
+const DEFAULT_COLOR = "white";
+const CONTRAST_COLOR = "rgba(128, 0, 32)";
 
 const Canvas = ({ width, height }) => {
   const [drawing, setDrawing] = useState(false);
+  const [color, setColor] = useState("white"); // State for selected color
+  const [backgroundColor, setBackgroundColor] = useState(DEFAULT_BG);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
 
@@ -16,9 +22,6 @@ const Canvas = ({ width, height }) => {
     canvas.height =
       document.body.getBoundingClientRect().height * (HEIGHT_VH_FACTOR / 100);
 
-    // canvas.width = document.documentElement.clientWidth * (WIDTH_VW_FACTOR/100)
-    // canvas.height = document.documentElement.clientHeight * (HEIGHT_VH_FACTOR/100)
-
     canvas.style.width = `${WIDTH_VW_FACTOR}vw`;
     canvas.style.height = `${HEIGHT_VH_FACTOR}vh`;
 
@@ -26,10 +29,10 @@ const Canvas = ({ width, height }) => {
     const ctx = canvas.getContext("2d");
 
     ctx.lineCap = "round";
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = color; // Set the stroke color
     ctx.lineWidth = 3;
     ctxRef.current = ctx;
-  }, []);
+  }, [color]); // Re-render the canvas when the color changes
 
   // Start drawing
   const startDraw = ({ nativeEvent }) => {
@@ -63,16 +66,45 @@ const Canvas = ({ width, height }) => {
     );
   };
 
+  const handleColorChange = (newColor) => {
+    if (newColor == DEFAULT_COLOR) {
+      setBackgroundColor(DEFAULT_BG);
+    } else {
+      setBackgroundColor(CONTRAST_BG);
+    }
+    setColor(newColor);
+  };
+
   return (
-    <canvas
-      onMouseDown={startDraw}
-      onMouseUp={stopDraw}
-      onMouseMove={draw}
-      ref={canvasRef}
-      style={canvasStyle}
-      id={"canvas"}
-    />
+    <div style={canvasContainerStyle}>
+      <canvas
+        onMouseDown={startDraw}
+        onMouseUp={stopDraw}
+        onMouseMove={draw}
+        ref={canvasRef}
+        style={{ ...canvasStyle, backgroundColor: backgroundColor }}
+        id={"canvas"}
+      />
+      <div style={colorSelectionStyle}>
+        <ColorOption
+          color={DEFAULT_COLOR}
+          onClick={handleColorChange}
+          selectedColor={color}
+        />
+        <ColorOption
+          color={CONTRAST_COLOR}
+          onClick={handleColorChange}
+          selectedColor={color}
+        />
+      </div>
+    </div>
   );
+};
+
+const canvasContainerStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 const canvasStyle = {
@@ -82,6 +114,40 @@ const canvasStyle = {
   boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)", // Add shadow effect
   width: `${WIDTH_VW_FACTOR}vw`,
   height: `${HEIGHT_VH_FACTOR}vh`,
+  marginLeft: "70px"
+};
+
+const colorSelectionStyle = {
+  width: "auto",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: "10px",
+};
+
+const ColorOption = ({ color, onClick, selectedColor }) => {
+  const handleClick = () => {
+    onClick(color);
+  };
+
+  return (
+    <div
+      style={{
+        width: "40px",
+        height: "40px",
+        backgroundColor: color,
+        borderRadius: "50%",
+        marginTop: "20px",
+        marginBottom: "20px",
+        marginLeft: "30px",
+        cursor: "pointer",
+        border: selectedColor === color ? "3px solid #d6cfd1" : "none",
+        boxShadow: selectedColor === color ? "0 0 10px rgba(0, 0, 0, 0.5)" : "none",
+      }}
+      onClick={handleClick}
+    />
+  );
 };
 
 export default Canvas;

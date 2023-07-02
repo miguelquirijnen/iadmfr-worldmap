@@ -23,6 +23,7 @@ import {
 } from "../../constants";
 
 import { fetchMessages } from "../../Database/requests";
+import DevMode from "../DevMode";
 
 const continents = [
   { id: "asia", component: <Asia /> },
@@ -36,14 +37,13 @@ const continents = [
 
 function Worldmap() {
   const [viewBox, setViewBox] = useState(BASE_VIEWBOX);
-  const [drawingMode, setDrawingMode] = useState(false);
-  const [msgInProgress, setMsgInProgress] = useState(false);
   const [currentContinent, setCurrentContinent] = useState("");
   const [currentStep, setCurrentStep] = useState(steps.continentSelection);
   const [currentMessage, setCurrentMessage] = useState();
   const [dataUrl, setDataUrl] = useState();
   const [messages, setMessages] = useState([]);
   const [zoomFactor, setZoomFactor] = useState(1.0);
+  const [devMode, setDevMode] = useState(false);
 
   const svgRef = useRef(null);
 
@@ -60,6 +60,8 @@ function Worldmap() {
     if (currentStep !== steps.continentSelection) return;
     const continent = e.currentTarget;
 
+    setCurrentContinent(continent.id);
+
     gsap.to(svgRef.current, {
       duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[continent.id] },
@@ -72,24 +74,14 @@ function Worldmap() {
         const currentWidth = parseFloat(currentDimensions[2]);
 
         setZoomFactor(initialWidth / currentWidth);
-        setViewBox(VIEWBOXES[continent.id]);
+        if (!devMode) setCurrentStep(steps.continentConfirmation);
       },
     });
-
-    setCurrentStep(steps.continentConfirmation);
-    setCurrentContinent(continent.id);
-  };
-
-  // STEP II - CONFIRM SELECTED CONTINENT
-  const handleConfirmContinentClick = (e) => {
-    setCurrentStep(steps.messageDrawing);
-    setDrawingMode(true);
   };
 
   // RETURN CLICK
   const handleReturnClick = (e) => {
-    setDrawingMode(false);
-    setMsgInProgress(false);
+    const lastStep = currentStep;
     setCurrentStep(steps.continentSelection);
     setCurrentContinent("");
 
@@ -107,6 +99,7 @@ function Worldmap() {
         const currentWidth = parseFloat(currentDimensions[2]);
 
         setZoomFactor(initialWidth / currentWidth);
+        if (!devMode && lastStep === 3) window.location.reload();
       },
     });
   };
@@ -120,84 +113,86 @@ function Worldmap() {
       .catch((error) => console.error(error));
   }, [currentStep]);
 
-  const renderMessages = () => {
-    return (
-      messages
-        // .filter((msg) => msg.continent == cont)
-        .map((msg) => {
-          return (
-            <image
-              key={msg.id}
-              className="message"
-              style={{
-                x: `${msg.xcoord}px`,
-                y: `${msg.ycoord}px`,
-                width: `${msg.width}px`,
-                height: `${msg.height}px`,
-              }}
-              href={msg.dataURL}
-            />
-          );
-        })
-    );
+  const renderMessages = (cont) => {
+    return messages
+      .filter((msg) => msg.continent === cont)
+      .map((msg) => {
+        return (
+          <image
+            key={msg.id}
+            className="message"
+            style={{
+              x: `${msg.xcoord}px`,
+              y: `${msg.ycoord}px`,
+              width: `${msg.width}px`,
+              height: `${msg.height}px`,
+            }}
+            href={msg.dataURL}
+            pointer-events="none" // Don't select messages when selecting continents
+          />
+        );
+      });
   };
 
   // DETERMINE CONTINENT CLASSNAMES
   const classNameContinent = (continentName) => {
-    if (currentContinent == "") return "continent";
-    else if (currentContinent == continentName) return "continent-selected";
+    if (currentContinent === "") return "continent";
+    else if (currentContinent === continentName) return "continent-selected";
     return "continent-unselected";
   };
 
   // RENDER CONTINENTS
-  const renderContinents = () => {
-    const groupElements = continents.map((c) => (
-      <>
-        <g
-          onClick={(e) => handleContinentClick(e)}
-          className={classNameContinent(c.id)}
-          id={c.id}
-          key={c.id}
-        >
-          {c.component}
-          {renderMessages(c.id)}
-        </g>
-      </>
-    ));
-    return (
-      <div className="svg-container">
-        <svg ref={svgRef} className="worldmap" id="worldmap" viewBox={viewBox}>
-          {groupElements}
-        </svg>
-      </div>
-    );
-  };
+  const renderContinents = () => (
+    <div className="svg-container">
+      <svg ref={svgRef} className="worldmap" id="worldmap" viewBox={viewBox}>
+        {continents.map((c) => (
+          <g
+            onClick={(e) => handleContinentClick(e)}
+            className={classNameContinent(c.id)}
+            id={c.id}
+            key={c.id}
+          >
+            {c.component}
+            {renderMessages(c.id)}
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
 
   return (
     <div style={{ overflow: "hidden" }}>
       {/* --------------------------- WORLDMAP --------------------------- */}
       {renderContinents()}
       {/* -------------------------- IADMFR LOGO -------------------------- */}
-      <IADMFR_LOGO className="iadmfr-logo" />
+      <IADMFR_LOGO currentStep={currentStep}/>
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
-      {currentStep === steps.continentConfirmation && (
-        <ContinentConfirmationStep
-          currentContinent={currentContinent}
-          handleConfirmContinentClick={handleConfirmContinentClick}
-          handleReturnClick={handleReturnClick}
-        />
-      )}
-      {currentStep === steps.messageDrawing && (
-        <DrawingStep
-          handleReturnClick={handleReturnClick}
-          currentContinent={currentContinent}
-          nextStep={nextStep}
-          setDrawingMode={setDrawingMode}
-          svgRef={svgRef}
-          setCurrentMessage={setCurrentMessage}
-          setDataUrl={setDataUrl}
-          zoomFactor={zoomFactor}
-        />
+      {(currentStep < 3 && currentContinent != "" && devMode == false) && (
+        <div
+          className={`overlay ${
+            currentStep === steps.continentConfirmation ||
+            currentStep === steps.messageDrawing
+              ? "active"
+              : ""
+          }`}
+        >
+          {currentStep === steps.continentConfirmation && (
+            <ContinentConfirmationStep
+              currentContinent={currentContinent}
+              handleReturnClick={handleReturnClick}
+              setCurrentStep={setCurrentStep}
+            />
+          )}
+          {currentStep === steps.messageDrawing && (
+            <DrawingStep
+              handleReturnClick={handleReturnClick}
+              currentContinent={currentContinent}
+              nextStep={nextStep}
+              setCurrentMessage={setCurrentMessage}
+              setDataUrl={setDataUrl}
+            />
+          )}
+        </div>
       )}
       {currentStep === steps.messagePlacing && (
         <PlacementStep
@@ -208,6 +203,18 @@ function Worldmap() {
           dataUrl={dataUrl}
           currentContinent={currentContinent}
           zoomFactor={zoomFactor}
+        />
+      )}
+      {/* ------------------------ DEV MODE ------------------------ */}
+      {(currentContinent === "" || devMode) && (
+        <DevMode
+          devMode={devMode}
+          setDevMode={setDevMode}
+          currentContinent={currentContinent}
+          handleReturnClick={handleReturnClick}
+          messages={messages}
+          zoomFactor={zoomFactor}
+          svgRef={svgRef}
         />
       )}
     </div>

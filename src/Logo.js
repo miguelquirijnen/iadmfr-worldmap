@@ -1,7 +1,7 @@
-export const IADMFR_LOGO = () => (
+export const IADMFR_LOGO = ({currentStep}) => (
   <div className="logoBox">
     <svg
-      className="iadmfr-logo"
+      className={`iadmfr-logo ${currentStep != 0 ? "active" : ""}`}
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 823.000000 1054.000000"
@@ -9,7 +9,6 @@ export const IADMFR_LOGO = () => (
     >
       <g
         transform="translate(0.000000,1054.000000) scale(0.100000,-0.100000)"
-        fill="#64020e"
         stroke="none"
       >
         <path

@@ -1,26 +1,18 @@
 import React, { useRef } from "react";
 import Canvas from "../Canvas";
-
-import interact from "interactjs";
-
 import { START_POSITIONS, svgNS, DRAG_FACTORS } from "../../constants";
 
 function DrawingStep({
   handleReturnClick,
   nextStep,
-  setDrawingMode,
-  svgRef,
   setCurrentMessage,
   currentContinent,
   setDataUrl,
-  zoomFactor,
 }) {
   const canvasRef = useRef(null);
 
   // Confirm the sketched message
   const handleConfirmMessageClick = async (e) => {
-    setDrawingMode(false);
-
     const canvas = document.getElementById("canvas");
     const dataURL = canvas.toDataURL("image/png");
     setDataUrl(dataURL);
@@ -40,7 +32,6 @@ function DrawingStep({
 
     // Get a reference to the group element
     var contElement = document.getElementById(currentContinent);
-    console.log(contElement.id);
     contElement.appendChild(imageElement);
 
     // Get a reference to the root <svg> element
@@ -66,24 +57,25 @@ function DrawingStep({
   const returnText = `Return to main view`;
 
   return (
-    <div style={drawingContainerStyle}>
-      <h2 style={textStyle}>{instructionText}</h2>
-      <Canvas />
-      <div style={buttonContainerStyle}>
-        <button
-          className="button"
-          onClick={(e) => handleConfirmMessageClick(e)}
-        >
-          {confirmText}
-        </button>
-        <button className="button" onClick={(e) => handleClearClick(e)}>
-          {clearText}
-        </button>
-        <button className="button" onClick={(e) => handleReturnClick(e)}>
-          {returnText}
-        </button>
+    
+      <div style={drawingContainerStyle}>
+        <h2 style={textStyle}>{instructionText}</h2>
+        <Canvas />
+        <div style={buttonContainerStyle}>
+          <button
+            className="button"
+            onClick={(e) => handleConfirmMessageClick(e)}
+          >
+            {confirmText}
+          </button>
+          <button className="button" onClick={(e) => handleClearClick(e)}>
+            {clearText}
+          </button>
+          <button className="button" onClick={(e) => handleReturnClick(e)}>
+            {returnText}
+          </button>
+        </div>
       </div>
-    </div>
   );
 }
 
@@ -116,6 +108,7 @@ const textStyle = {
   fontSize: "3vh",
   fontWeight: "bold",
   textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
+  marginBottom: "30px",
 };
 
 export default DrawingStep;

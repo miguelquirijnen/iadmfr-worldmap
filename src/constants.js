@@ -30,13 +30,13 @@ export const VIEWBOXES = {
 };
 
 export const START_POSITIONS = {
-  africa: ["1000", "100"],
-  asia: ["510", "165"],
-  australasia: ["700", "630"],
-  europe: ["1000", "200"],
-  "middle-east": ["150", "300"],
-  "north-america": ["-450", "150"],
-  "latin-america": ["-320", "500"],
+  africa: ["1080", "500"],
+  asia: ["1400", "160"],
+  australasia: ["1650", "620"],
+  europe: ["1000", "100"],
+  "middle-east": ["1080", "300"],
+  "north-america": ["380", "120"],
+  "latin-america": ["550", "500"],
 };
 
 export const DRAG_FACTORS = {

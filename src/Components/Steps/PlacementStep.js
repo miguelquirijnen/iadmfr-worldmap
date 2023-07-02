@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { gsap } from "gsap";
 import {
   BASE_VIEWBOX,
@@ -23,14 +23,12 @@ function PlacementStep({
     const target = event.target;
     const factor = (1 / zoomFactor) * DRAG_FACTORS[currentContinent];
 
-    const x =
-      (parseFloat(target.style.x) || 0) + event.dx * factor;
-    const y =
-      (parseFloat(target.style.y) || 0) + event.dy * factor;
+    const x = (parseFloat(target.style.x) || 0) + event.dx * factor;
+    const y = (parseFloat(target.style.y) || 0) + event.dy * factor;
 
     // Store the object's position
-    target.style.x = x
-    target.style.y = y
+    target.style.x = x;
+    target.style.y = y;
   }
 
   // Enable draggability on the draggable object
@@ -42,11 +40,6 @@ function PlacementStep({
 
   // Confirm the placement of the object
   const handleConfirmPlacementClick = async (e) => {
-    gsap.to(svgRef.current, {
-      duration: ANIMATION_DURATION,
-      attr: { viewBox: BASE_VIEWBOX },
-    });
-
     const widthString = currentMessage.style.width;
     const heightString = currentMessage.style.height;
 
@@ -54,37 +47,73 @@ function PlacementStep({
       dataUrl,
       currentMessage.style.x,
       currentMessage.style.y,
-      widthString.substr(0, widthString.length-2),
-      heightString.substr(0, heightString.length-2),
+      widthString.substr(0, widthString.length - 2),
+      heightString.substr(0, heightString.length - 2),
       currentContinent
     );
 
     nextStep();
 
     currentMessage.remove();
-    window.location.reload();
+    handleReturnClick();
   };
 
+  // ZOOM IN
   const zoomObjectIn = () => {
-    const initWidthStr = currentMessage.style.width
-    const initHeightStr = currentMessage.style.height
+    const initWidthStr = currentMessage.style.width;
+    const initHeightStr = currentMessage.style.height;
+    const initX = parseFloat(currentMessage.style.x);
+    const initY = parseFloat(currentMessage.style.y);
 
-    const initWidth = parseFloat(initWidthStr.substr(0, initWidthStr.length-2))
-    const initHeight = parseFloat(initHeightStr.substr(0, initHeightStr.length-2))
+    const initWidth = parseFloat(
+      initWidthStr.substr(0, initWidthStr.length - 2)
+    );
+    const initHeight = parseFloat(
+      initHeightStr.substr(0, initHeightStr.length - 2)
+    );
 
-    currentMessage.style.width = initWidth * 1.1;
-    currentMessage.style.height = initHeight * 1.1;
+    const newWidth = initWidth * 1.1;
+    const newHeight = initHeight * 1.1;
+
+    const moveToLeft = Math.abs(initWidth - newWidth) / 2;
+    const moveUp = Math.abs(initHeight - newHeight) / 2;
+
+    const newX = initX - moveToLeft;
+    const newY = initY - moveUp;
+
+    currentMessage.style.width = newWidth;
+    currentMessage.style.height = newHeight;
+    currentMessage.style.x = newX;
+    currentMessage.style.y = newY;
   };
 
+  // ZOOM OUT
   const zoomObjectOut = () => {
-    const initWidthStr = currentMessage.style.width
-    const initHeightStr = currentMessage.style.height
+    const initWidthStr = currentMessage.style.width;
+    const initHeightStr = currentMessage.style.height;
+    const initX = parseFloat(currentMessage.style.x);
+    const initY = parseFloat(currentMessage.style.y);
 
-    const initWidth = parseFloat(initWidthStr.substr(0, initWidthStr.length-2))
-    const initHeight = parseFloat(initHeightStr.substr(0, initHeightStr.length-2))
+    const initWidth = parseFloat(
+      initWidthStr.substr(0, initWidthStr.length - 2)
+    );
+    const initHeight = parseFloat(
+      initHeightStr.substr(0, initHeightStr.length - 2)
+    );
 
-    currentMessage.style.width = initWidth / 1.1;
-    currentMessage.style.height = initHeight / 1.1;
+    const newWidth = initWidth / 1.1;
+    const newHeight = initHeight / 1.1;
+
+    const moveToRight = Math.abs(initWidth - newWidth) / 2;
+    const moveDown = Math.abs(initHeight - newHeight) / 2;
+
+    const newX = initX + moveToRight;
+    const newY = initY + moveDown;
+
+    currentMessage.style.width = newWidth;
+    currentMessage.style.height = newHeight;
+    currentMessage.style.x = newX;
+    currentMessage.style.y = newY;
   };
 
   const instructionText = `Place your message on the continent.`;
@@ -101,8 +130,6 @@ function PlacementStep({
         y={START_POSITIONS[currentContinent][1]}
         width={150}
         height={80}
-        stroke="red"
-        strokeWidth="2"
         href={dataUrl}
       />
       <h2 style={textStyle}>{instructionText}</h2>

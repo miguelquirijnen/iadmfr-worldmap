@@ -1,17 +1,23 @@
-import { CONTINENT_NAMES } from "../../constants";
+import { CONTINENT_NAMES, steps } from "../../constants";
 
 function ContinentConfirmationStep({
   currentContinent,
-  handleConfirmContinentClick,
   handleReturnClick,
+  setCurrentStep,
 }) {
-  const questionText = `Leave a message from ${CONTINENT_NAMES[currentContinent]}?`;
+  const handleConfirmContinentClick = (e) => {
+    setCurrentStep(steps.messageDrawing);
+  };
+
+  const questionText1 = `Leave a message from `;
+  const questionText2 = `${CONTINENT_NAMES[currentContinent]}`;
+  const questionText3 = `?`;
   const confirmText = `Yes, continue!`;
   const returnText = `No, return`;
 
   return (
     <div style={confirmationContainerStyle}>
-      <h2 style={textStyle}>{questionText}</h2>
+      <h2 style={textStyle}>{questionText1}<i>{questionText2}</i>{questionText3}</h2>
       <div style={buttonContainerStyle}>
         <button
           className="button"
