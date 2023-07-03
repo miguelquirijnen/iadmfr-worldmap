@@ -42,7 +42,7 @@ function Worldmap() {
   const [currentMessage, setCurrentMessage] = useState();
   const [dataUrl, setDataUrl] = useState();
   const [messages, setMessages] = useState([]);
-  const [zoomFactor, setZoomFactor] = useState(1.0);
+  const [zoomFactor, setZoomFactor] = useState([1.0, 1.0]);
   const [devMode, setDevMode] = useState(false);
 
   const svgRef = useRef(null);
@@ -72,8 +72,19 @@ function Worldmap() {
 
         const initialWidth = parseFloat(initialDimensions[2]);
         const currentWidth = parseFloat(currentDimensions[2]);
+        const initialHeight = parseFloat(initialDimensions[3]);
+        const currentHeight = parseFloat(currentDimensions[3]);
+        console.log(
+          "zoom: ",
+          initialWidth / currentWidth,
+          " - ",
+          initialHeight / currentHeight
+        );
 
-        setZoomFactor(initialWidth / currentWidth);
+        setZoomFactor([
+          initialWidth / currentWidth,
+          initialHeight / currentHeight,
+        ]);
         if (!devMode) setCurrentStep(steps.continentConfirmation);
       },
     });
@@ -97,8 +108,13 @@ function Worldmap() {
 
         const initialWidth = parseFloat(initialDimensions[2]);
         const currentWidth = parseFloat(currentDimensions[2]);
+        const initialHeight = parseFloat(initialDimensions[3]);
+        const currentHeight = parseFloat(currentDimensions[3]);
 
-        setZoomFactor(initialWidth / currentWidth);
+        setZoomFactor([
+          initialWidth / currentWidth,
+          initialHeight / currentHeight,
+        ]);
         if (!devMode && lastStep === 3) window.location.reload();
       },
     });
@@ -165,9 +181,9 @@ function Worldmap() {
       {/* --------------------------- WORLDMAP --------------------------- */}
       {renderContinents()}
       {/* -------------------------- IADMFR LOGO -------------------------- */}
-      <IADMFR_LOGO currentStep={currentStep}/>
+      <IADMFR_LOGO currentStep={currentStep} />
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
-      {(currentStep < 3 && currentContinent != "" && devMode == false) && (
+      {currentStep < 3 && currentContinent != "" && devMode == false && (
         <div
           className={`overlay ${
             currentStep === steps.continentConfirmation ||

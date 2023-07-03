@@ -21,10 +21,12 @@ function PlacementStep({
   // Drag move event listener
   function dragMoveListener(event) {
     const target = event.target;
-    const factor = (1 / zoomFactor) * DRAG_FACTORS[currentContinent];
-
-    const x = (parseFloat(target.style.x) || 0) + event.dx * factor;
-    const y = (parseFloat(target.style.y) || 0) + event.dy * factor;
+    console.log(zoomFactor)
+    const factorX = (1 / zoomFactor[0]) * DRAG_FACTORS[currentContinent];
+    const factorY = (1 / zoomFactor[1]) * DRAG_FACTORS[currentContinent];
+    console.log("factors: ", factorX, " - ", factorY)
+    const x = (parseFloat(target.style.x) || 0) + event.dx * factorX;
+    const y = (parseFloat(target.style.y) || 0) + event.dy * factorY;
 
     // Store the object's position
     target.style.x = x;
