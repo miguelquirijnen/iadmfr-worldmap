@@ -1,5 +1,5 @@
 import Worldmap from "./Components/Worldmap";
-import React, { useRef } from "react";
+import React from "react";
 
 function App() {
   return (

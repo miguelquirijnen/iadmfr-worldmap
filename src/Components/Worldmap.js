@@ -36,7 +36,6 @@ const continents = [
 ];
 
 function Worldmap() {
-  const [viewBox, setViewBox] = useState(BASE_VIEWBOX);
   const [currentContinent, setCurrentContinent] = useState("");
   const [currentStep, setCurrentStep] = useState(steps.continentSelection);
   const [currentMessage, setCurrentMessage] = useState();
@@ -135,7 +134,7 @@ function Worldmap() {
   // RENDER CONTINENTS
   const renderContinents = () => (
     <div className="svg-container">
-      <svg ref={svgRef} className="worldmap" id="worldmap" viewBox={viewBox}>
+      <svg ref={svgRef} className="worldmap" id="worldmap" viewBox={BASE_VIEWBOX}>
         {continents.map((c) => (
           <g
             onClick={(e) => handleContinentClick(e)}

@@ -59,21 +59,21 @@ const Canvas = ({ width, height }) => {
   };
 
   // Get coordinates from mouse or touch event
-  const getEventCoordinates = (event) => {
-    let offsetX, offsetY;
+  // const getEventCoordinates = (event) => {
+  //   let offsetX, offsetY;
 
-    if (event.type === "mousedown" || event.type === "mousemove") {
-      offsetX = event.nativeEvent.offsetX;
-      offsetY = event.nativeEvent.offsetY;
-    } else if (event.type === "touchstart" || event.type === "touchmove") {
-      const rect = canvasRef.current.getBoundingClientRect();
-      const touch = event.touches[0] || event.changedTouches[0];
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-    }
+  //   if (event.type === "mousedown" || event.type === "mousemove") {
+  //     offsetX = event.nativeEvent.offsetX;
+  //     offsetY = event.nativeEvent.offsetY;
+  //   } else if (event.type === "touchstart" || event.type === "touchmove") {
+  //     const rect = canvasRef.current.getBoundingClientRect();
+  //     const touch = event.touches[0] || event.changedTouches[0];
+  //     offsetX = touch.clientX - rect.left;
+  //     offsetY = touch.clientY - rect.top;
+  //   }
 
-    return { offsetX, offsetY };
-  };
+  //   return { offsetX, offsetY };
+  // };
 
   // Clear the canvas
   const clear = () => {
@@ -86,7 +86,7 @@ const Canvas = ({ width, height }) => {
   };
 
   const handleColorChange = (newColor) => {
-    if (newColor == DEFAULT_COLOR) {
+    if (newColor === DEFAULT_COLOR) {
       setBackgroundColor(DEFAULT_BG);
     } else {
       setBackgroundColor(CONTRAST_BG);

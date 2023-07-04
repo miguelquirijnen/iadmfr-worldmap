@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import Canvas from "../Canvas";
-import { START_POSITIONS, svgNS, DRAG_FACTORS } from "../../constants";
+import { START_POSITIONS, svgNS } from "../../constants";
 
 function getBoundingBox(canvas) {
   const ctx = canvas.getContext("2d");
@@ -43,12 +43,10 @@ function DrawingStep({
   currentContinent,
   setDataUrl,
 }) {
-  const canvasRef = useRef(null);
 
   // Confirm the sketched message
   const handleConfirmMessageClick = async (e) => {
     const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
 
     // Get the bounding box of the drawn portion
     const boundingBox = getBoundingBox(canvas);
@@ -84,6 +82,8 @@ function DrawingStep({
     imageElement.style.height = (boundingBox.width > boundingBox.height ? "auto" : "100");
     imageElement.style.x = START_POSITIONS[currentContinent][0];
     imageElement.style.y = START_POSITIONS[currentContinent][1];
+
+    imageElement.key = "newMessage";
 
     // Set the href attribute to the Data URL
     imageElement.setAttribute("href", dataURL);

@@ -144,7 +144,13 @@ const DevMode = ({
           interact(selectedMessage).unset();
         });
     }
-  }, [devMode, currentContinent, messages]);
+  }, [
+    devMode,
+    currentContinent,
+    messages,
+    selectedMessage,
+    handleSelectedMessageClick,
+  ]);
 
   // Function to handle the download
   const handleDownloadImages = () => {
@@ -258,7 +264,7 @@ const DevMode = ({
         />
         {devMode && <p style={textStyle}>DEVMODE ON</p>}
       </div>
-      {devMode && currentContinent == "" && (
+      {devMode && currentContinent === "" && (
         <div style={buttonContainerStyle}>
           <button className="button" onClick={handleDownloadSVG}>
             {downloadSVGText}
