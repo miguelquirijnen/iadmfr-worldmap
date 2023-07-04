@@ -1,10 +1,7 @@
 import React from "react";
-import { gsap } from "gsap";
 import {
-  BASE_VIEWBOX,
-  ANIMATION_DURATION,
-  DRAG_FACTORS,
   START_POSITIONS,
+  VIEWBOXES
 } from "../../constants";
 import interact from "interactjs";
 import { pushToDb } from "../../Database/requests";
@@ -21,10 +18,28 @@ function PlacementStep({
   // Drag move event listener
   function dragMoveListener(event) {
     const target = event.target;
-    console.log(zoomFactor)
-    const factorX = (1 / zoomFactor[0]) * DRAG_FACTORS[currentContinent];
-    const factorY = (1 / zoomFactor[1]) * DRAG_FACTORS[currentContinent];
-    console.log("factors: ", factorX, " - ", factorY)
+
+    const factorX = 1 / zoomFactor[0]
+    const factorY = 1 / zoomFactor[1]
+
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    const viewBoxRatio = VIEWBOXES[currentContinent].split(" ")[2] / VIEWBOXES[currentContinent].split(" ")[3];
+    const screenRatio = screenWidth / screenHeight;
+
+    if (screenRatio < viewBoxRatio) {
+      // Width stays constant
+      console.log("constant width")
+      // Adapt factorY
+    } else if (screenRatio > viewBoxRatio) {
+      // Height stays constant
+      console.log("constant height: ", factorX, factorY)
+      // Adapt factorX
+    }
+
+    console.log(factorX, factorY)
+     
     const x = (parseFloat(target.style.x) || 0) + event.dx * factorX;
     const y = (parseFloat(target.style.y) || 0) + event.dy * factorY;
 

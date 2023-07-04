@@ -65,7 +65,6 @@ const DevMode = ({
     // Update the continent elements' fill and stroke attributes
     const continentElements = clonedSvgElement.querySelectorAll(".continent");
     continentElements.forEach((element) => {
-        console.log(element)
       const continentName = element.getAttribute("id");
       const continentColor = computedStyles.getPropertyValue(`--${continentName}-color`);
       element.setAttribute("fill", continentColor);
@@ -89,34 +88,6 @@ const DevMode = ({
     URL.revokeObjectURL(url);
   };
 
-  // Drag move event listener
-  function dragMoveListener(event) {
-    const target = event.target;
-    const factor = (1 / zoomFactor) * DRAG_FACTORS[currentContinent];
-
-    const x = (parseFloat(target.style.x) || 0) + event.dx * factor;
-    const y = (parseFloat(target.style.y) || 0) + event.dy * factor;
-
-    // Store the object's position
-    target.style.x = x;
-    target.style.y = y;
-  }
-
-  //   useEffect(() => {
-  //     if (devMode && currentContinent != "") {
-  //         console.log("enabling", messages.length)
-  //       messages.forEach((msg) => {
-  //         // Enable draggability on the draggable object
-  //         interact(msg).draggable({
-  //           listeners: {
-  //             move: dragMoveListener,
-  //           },
-  //         });
-  //       });
-  //     } else {
-  //       messages.forEach((msg) => interact(msg).unset());
-  //     }
-  //   }, [devMode, currentContinent]);
 
   const downloadSVGText = `Download map as SVG`;
   const downloadPNGText = `Download all messages as ZIP file`;

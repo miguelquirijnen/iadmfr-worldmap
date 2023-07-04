@@ -183,7 +183,7 @@ function Worldmap() {
       {/* -------------------------- IADMFR LOGO -------------------------- */}
       <IADMFR_LOGO currentStep={currentStep} />
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
-      {currentStep < 3 && currentContinent != "" && devMode == false && (
+      {currentStep < 3 && currentContinent !== "" && !devMode && (
         <div
           className={`overlay ${
             currentStep === steps.continentConfirmation ||

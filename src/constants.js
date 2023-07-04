@@ -39,14 +39,4 @@ export const START_POSITIONS = {
   "latin-america": ["550", "500"],
 };
 
-export const DRAG_FACTORS = {
-  africa: 1.5,
-  asia: 1.5,
-  australasia: 1.5,
-  europe: 1.5,
-  "middle-east": 1,
-  "north-america": 1,
-  "latin-america": 2.5,
-};
-
 export const svgNS = "http://www.w3.org/2000/svg";
