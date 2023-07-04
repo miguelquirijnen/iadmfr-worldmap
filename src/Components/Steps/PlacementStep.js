@@ -74,17 +74,12 @@ function PlacementStep({
 
   // ZOOM IN
   const zoomObjectIn = () => {
-    const initWidthStr = currentMessage.style.width;
-    const initHeightStr = currentMessage.style.height;
     const initX = parseFloat(currentMessage.style.x);
     const initY = parseFloat(currentMessage.style.y);
 
-    const initWidth = parseFloat(
-      initWidthStr.substr(0, initWidthStr.length - 2)
-    );
-    const initHeight = parseFloat(
-      initHeightStr.substr(0, initHeightStr.length - 2)
-    );
+    const boundingRect = currentMessage.getBBox();
+    const initWidth = boundingRect.width;
+    const initHeight = boundingRect.height;
 
     const newWidth = initWidth * 1.1;
     const newHeight = initHeight * 1.1;
@@ -100,17 +95,12 @@ function PlacementStep({
 
   // ZOOM OUT
   const zoomObjectOut = () => {
-    const initWidthStr = currentMessage.style.width;
-    const initHeightStr = currentMessage.style.height;
     const initX = parseFloat(currentMessage.style.x);
     const initY = parseFloat(currentMessage.style.y);
 
-    const initWidth = parseFloat(
-      initWidthStr.substr(0, initWidthStr.length - 2)
-    );
-    const initHeight = parseFloat(
-      initHeightStr.substr(0, initHeightStr.length - 2)
-    );
+    const boundingRect = currentMessage.getBBox();
+    const initWidth = boundingRect.width;
+    const initHeight = boundingRect.height;
 
     const newWidth = initWidth / 1.1;
     const newHeight = initHeight / 1.1;

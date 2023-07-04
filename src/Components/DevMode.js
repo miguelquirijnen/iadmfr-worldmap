@@ -21,18 +21,19 @@ const DevMode = ({
   // Function to handle the download
   const handleDownloadImages = () => {
     const zip = new JSZip();
+    if (messages) {
+      messages.forEach((msg) => {
+        const imageBlob = dataURLToBlob(msg.dataURL);
+        zip.file(
+          `message_${msg.xcoord}_${msg.ycoord}_${msg.width}_${msg.height}.png`,
+          imageBlob
+        );
+      });
 
-    messages.forEach((msg) => {
-      const imageBlob = dataURLToBlob(msg.dataURL);
-      zip.file(
-        `message_${msg.xcoord}_${msg.ycoord}_${msg.width}_${msg.height}.png`,
-        imageBlob
-      );
-    });
-
-    zip.generateAsync({ type: "blob" }).then((content) => {
-      saveAs(content, "messages.zip");
-    });
+      zip.generateAsync({ type: "blob" }).then((content) => {
+        saveAs(content, "messages.zip");
+      });
+    }
   };
 
   const dataURLToBlob = (dataURL) => {
@@ -50,35 +51,41 @@ const DevMode = ({
 
   const handleDownloadSVG = () => {
     const svgElement = svgRef.current;
-  
+
     // Clone the original SVG element
     const clonedSvgElement = svgElement.cloneNode(true);
-  
+
     // Create a temporary container and append the cloned SVG element
     const container = document.createElement("div");
     container.appendChild(clonedSvgElement);
-  
+
     // Get computed styles of the continent elements
-    const computedStyles = window.getComputedStyle(container.querySelector("svg"));
-  
+    const computedStyles = window.getComputedStyle(
+      container.querySelector("svg")
+    );
+
     // Update the continent elements' fill and stroke attributes
     const continentElements = clonedSvgElement.querySelectorAll(".continent");
-    continentElements.forEach((element) => {
-      const continentName = element.getAttribute("id");
-      const continentColor = computedStyles.getPropertyValue(`--${continentName}-color`);
-      element.setAttribute("fill", continentColor);
-      element.setAttribute("stroke", continentColor);
-    });
-  
+    if (messages) {
+      continentElements.forEach((element) => {
+        const continentName = element.getAttribute("id");
+        const continentColor = computedStyles.getPropertyValue(
+          `--${continentName}-color`
+        );
+        element.setAttribute("fill", continentColor);
+        element.setAttribute("stroke", continentColor);
+      });
+    } else return;
+
     // Serialize the updated SVG element to string
     const serializer = new XMLSerializer();
     const svgString = serializer.serializeToString(clonedSvgElement);
-  
+
     // Create and trigger the download link
     const downloadLink = document.createElement("a");
     const blob = new Blob([svgString], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
-  
+
     downloadLink.href = url;
     downloadLink.download = "worldmap.svg";
     document.body.appendChild(downloadLink);
@@ -86,7 +93,6 @@ const DevMode = ({
     document.body.removeChild(downloadLink);
     URL.revokeObjectURL(url);
   };
-
 
   const downloadSVGText = `Download map as SVG`;
   const downloadPNGText = `Download all messages as ZIP file`;
@@ -101,7 +107,7 @@ const DevMode = ({
         />
         {devMode && <p style={textStyle}>DEVMODE ON</p>}
       </div>
-      {(devMode && currentContinent == "")&& (
+      {devMode && currentContinent == "" && (
         <div style={buttonContainerStyle}>
           <button className="button" onClick={handleDownloadSVG}>
             {downloadSVGText}

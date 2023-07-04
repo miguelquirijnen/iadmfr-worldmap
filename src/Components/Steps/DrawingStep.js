@@ -2,6 +2,40 @@ import React, { useRef } from "react";
 import Canvas from "../Canvas";
 import { START_POSITIONS, svgNS, DRAG_FACTORS } from "../../constants";
 
+function getBoundingBox(canvas) {
+  const ctx = canvas.getContext("2d");
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const pixels = imageData.data;
+  let minX = canvas.width;
+  let minY = canvas.height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let y = 0; y < canvas.height; y++) {
+    for (let x = 0; x < canvas.width; x++) {
+      const index = (y * canvas.width + x) * 4;
+      const alpha = pixels[index + 3];
+
+      if (alpha !== 0) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+
+  const width = maxX - minX + 1;
+  const height = maxY - minY + 1;
+
+  return {
+    x: minX,
+    y: minY,
+    width,
+    height,
+  };
+}
+
 function DrawingStep({
   handleReturnClick,
   nextStep,
@@ -14,7 +48,31 @@ function DrawingStep({
   // Confirm the sketched message
   const handleConfirmMessageClick = async (e) => {
     const canvas = document.getElementById("canvas");
-    const dataURL = canvas.toDataURL("image/png");
+    const ctx = canvas.getContext("2d");
+
+    // Get the bounding box of the drawn portion
+    const boundingBox = getBoundingBox(canvas);
+
+    // Create a new canvas with the dimensions of the drawn portion
+    const drawnCanvas = document.createElement("canvas");
+    drawnCanvas.width = boundingBox.width;
+    drawnCanvas.height = boundingBox.height;
+    const drawnCtx = drawnCanvas.getContext("2d");
+
+    // Copy the drawn portion onto the new canvas
+    drawnCtx.drawImage(
+      canvas,
+      boundingBox.x,
+      boundingBox.y,
+      boundingBox.width,
+      boundingBox.height,
+      0,
+      0,
+      boundingBox.width,
+      boundingBox.height
+    );
+
+    const dataURL = drawnCanvas.toDataURL("image/png");
     setDataUrl(dataURL);
 
     // Create the <image> element
@@ -22,8 +80,8 @@ function DrawingStep({
 
     // Set the necessary attributes
     imageElement.style.zIndex = "1999";
-    imageElement.style.width = "150";
-    imageElement.style.height = "80";
+    imageElement.style.width = (boundingBox.width > boundingBox.height ? "100" : "auto");
+    imageElement.style.height = (boundingBox.width > boundingBox.height ? "auto" : "100");
     imageElement.style.x = START_POSITIONS[currentContinent][0];
     imageElement.style.y = START_POSITIONS[currentContinent][1];
 
@@ -57,25 +115,24 @@ function DrawingStep({
   const returnText = `Return to main view`;
 
   return (
-    
-      <div style={drawingContainerStyle}>
-        <h2 style={textStyle}>{instructionText}</h2>
-        <Canvas />
-        <div style={buttonContainerStyle}>
-          <button
-            className="button"
-            onClick={(e) => handleConfirmMessageClick(e)}
-          >
-            {confirmText}
-          </button>
-          <button className="button" onClick={(e) => handleClearClick(e)}>
-            {clearText}
-          </button>
-          <button className="button" onClick={(e) => handleReturnClick(e)}>
-            {returnText}
-          </button>
-        </div>
+    <div style={drawingContainerStyle}>
+      <h2 style={textStyle}>{instructionText}</h2>
+      <Canvas />
+      <div style={buttonContainerStyle}>
+        <button
+          className="button"
+          onClick={(e) => handleConfirmMessageClick(e)}
+        >
+          {confirmText}
+        </button>
+        <button className="button" onClick={(e) => handleClearClick(e)}>
+          {clearText}
+        </button>
+        <button className="button" onClick={(e) => handleReturnClick(e)}>
+          {returnText}
+        </button>
       </div>
+    </div>
   );
 }
 
