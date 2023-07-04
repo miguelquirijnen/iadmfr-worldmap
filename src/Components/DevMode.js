@@ -14,6 +14,8 @@ const DevMode = ({
   messages,
   svgRef,
 }) => {
+  const [selectedMessage, setSelectedMessage] = useState();
+
   // Drag move event listener
   function dragMoveListener(event) {
     const target = event.target;
@@ -49,9 +51,71 @@ const DevMode = ({
     target.style.y = (parseFloat(target.style.y) || 0) + event.dy * factorY;
   }
 
+  // ZOOM IN
+  const zoomObjectIn = () => {
+    if (!selectedMessage) return;
+    const initX = parseFloat(selectedMessage.style.x);
+    const initY = parseFloat(selectedMessage.style.y);
+
+    const boundingRect = selectedMessage.getBBox();
+    const initWidth = boundingRect.width;
+    const initHeight = boundingRect.height;
+
+    const newWidth = initWidth * 1.1;
+    const newHeight = initHeight * 1.1;
+
+    const moveToLeft = Math.abs(initWidth - newWidth) / 2;
+    const moveUp = Math.abs(initHeight - newHeight) / 2;
+
+    selectedMessage.style.width = newWidth;
+    selectedMessage.style.height = newHeight;
+    selectedMessage.style.x = initX - moveToLeft;
+    selectedMessage.style.y = initY - moveUp;
+  };
+
+  // ZOOM OUT
+  const zoomObjectOut = () => {
+    if (!selectedMessage) return;
+    const initX = parseFloat(selectedMessage.style.x);
+    const initY = parseFloat(selectedMessage.style.y);
+
+    const boundingRect = selectedMessage.getBBox();
+    const initWidth = boundingRect.width;
+    const initHeight = boundingRect.height;
+
+    const newWidth = initWidth / 1.1;
+    const newHeight = initHeight / 1.1;
+
+    const moveToRight = Math.abs(initWidth - newWidth) / 2;
+    const moveDown = Math.abs(initHeight - newHeight) / 2;
+
+    selectedMessage.style.width = newWidth;
+    selectedMessage.style.height = newHeight;
+    selectedMessage.style.x = initX + moveToRight;
+    selectedMessage.style.y = initY + moveDown;
+  };
+
   const handleDevClick = () => {
     if (currentContinent) return;
     setDevMode(!devMode);
+  };
+
+  useEffect(() => {
+    console.log(selectedMessage);
+  }, [selectedMessage]);
+
+  const handleSelectedMessageClick = (newMessage) => {
+    // Unset previous if any
+    if (selectedMessage) {
+      interact(selectedMessage).unset();
+    }
+
+    setSelectedMessage(newMessage);
+    interact(newMessage).draggable({
+      listeners: {
+        move: dragMoveListener,
+      },
+    });
   };
 
   useEffect(() => {
@@ -65,11 +129,9 @@ const DevMode = ({
           const query = `image[href="${msg.dataURL}"]`;
           const msgElement = group.querySelector(query);
           msgElement.setAttribute("class", "message-selectable");
-          interact(msgElement).draggable({
-            listeners: {
-              move: dragMoveListener,
-            },
-          });
+          msgElement.addEventListener("click", () =>
+            handleSelectedMessageClick(msgElement)
+          );
         });
     } else {
       // Restore to original
@@ -79,7 +141,7 @@ const DevMode = ({
           const query = `image[href="${msg.dataURL}"]`;
           const msgElement = group.querySelector(query);
           msgElement.setAttribute("class", "message-selectable");
-          interact(msgElement).unset();
+          interact(selectedMessage).unset();
         });
     }
   }, [devMode, currentContinent, messages]);
@@ -184,6 +246,9 @@ const DevMode = ({
   const returnText = `Return to main view`;
   const saveText = `Save changes`;
 
+  const zoomIn = `+`;
+  const zoomOut = `-`;
+
   return (
     <div>
       <div style={iconContainterStyle}>
@@ -205,11 +270,27 @@ const DevMode = ({
       )}
       {devMode && currentContinent && (
         <div style={buttonContainerStyle}>
-          <button className="button" onClick={(e) => handleReturnClick(e)}>
+          <button
+            className="button"
+            onClick={(e) => {
+              setSelectedMessage();
+              handleReturnClick(e);
+            }}
+          >
             {returnText}
           </button>
           <button className="button" onClick={(e) => handleSave(e)}>
             {saveText}
+          </button>
+        </div>
+      )}
+      {selectedMessage && (
+        <div style={zoomContainerStyle}>
+          <button className="button" onClick={(e) => zoomObjectIn(e)}>
+            {zoomIn}
+          </button>
+          <button className="button" onClick={(e) => zoomObjectOut(e)}>
+            {zoomOut}
           </button>
         </div>
       )}
@@ -222,6 +303,20 @@ const buttonContainerStyle = {
   display: "flex",
   justifyContent: "center",
   bottom: "2%",
+};
+
+const zoomContainerStyle = {
+  width: "auto",
+  top: "50%",
+  right: "1%",
+  transform: "translate(-50%, -50%)",
+  position: "fixed",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end",
+  background: "rgb(255,255,255,0.6)",
+  padding: "10px",
+  borderRadius: "10px",
 };
 
 const iconContainterStyle = {

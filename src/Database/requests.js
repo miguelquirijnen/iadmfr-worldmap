@@ -1,5 +1,5 @@
-const DOMAIN = "192.168.0.222"
-// const DOMAIN = "localhost"
+// const DOMAIN = "192.168.0.222"
+const DOMAIN = "localhost"
 
 const PORT = 5000
 
@@ -7,6 +7,7 @@ const BASE_URL = `http://${DOMAIN}:${PORT}`;
 
 // Upload the message sketch to the database
 export async function pushToDb(data, x, y, w, h, continent) {
+  console.log(data)
   await fetch(BASE_URL + "/message", {
     method: "post",
     body: JSON.stringify({

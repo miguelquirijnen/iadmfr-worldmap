@@ -37,6 +37,7 @@ const Canvas = ({ width, height }) => {
   // Start drawing
   const startDraw = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
+    // const { offsetX, offsetY } = getEventCoordinates(nativeEvent);
     ctxRef.current.beginPath();
     ctxRef.current.moveTo(offsetX, offsetY);
     setDrawing(true);
@@ -51,9 +52,27 @@ const Canvas = ({ width, height }) => {
   // Draw on the canvas
   const draw = ({ nativeEvent }) => {
     if (!drawing) return;
+    // const { offsetX, offsetY } = getEventCoordinates(nativeEvent);
     const { offsetX, offsetY } = nativeEvent;
     ctxRef.current.lineTo(offsetX, offsetY);
     ctxRef.current.stroke();
+  };
+
+  // Get coordinates from mouse or touch event
+  const getEventCoordinates = (event) => {
+    let offsetX, offsetY;
+
+    if (event.type === "mousedown" || event.type === "mousemove") {
+      offsetX = event.nativeEvent.offsetX;
+      offsetY = event.nativeEvent.offsetY;
+    } else if (event.type === "touchstart" || event.type === "touchmove") {
+      const rect = canvasRef.current.getBoundingClientRect();
+      const touch = event.touches[0] || event.changedTouches[0];
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+    }
+
+    return { offsetX, offsetY };
   };
 
   // Clear the canvas
@@ -81,6 +100,9 @@ const Canvas = ({ width, height }) => {
         onMouseDown={startDraw}
         onMouseUp={stopDraw}
         onMouseMove={draw}
+        onTouchStart={startDraw}
+        onTouchEnd={stopDraw}
+        onTouchMove={draw}
         ref={canvasRef}
         style={{ ...canvasStyle, backgroundColor: backgroundColor }}
         id={"canvas"}
