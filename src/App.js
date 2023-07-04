@@ -1,9 +1,7 @@
-import Worldmap from "./Components/World/Worldmap";
+import Worldmap from "./Components/Worldmap";
 import React, { useRef } from "react";
 
 function App() {
-  const overlayRef = useRef(null);
-
   return (
     <div className="wrapper">
       <link

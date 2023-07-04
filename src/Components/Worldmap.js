@@ -8,22 +8,22 @@ import {
   LatinAmerica,
   MiddleEast,
   NorthAmerica,
-} from "./Continents";
-import { IADMFR_LOGO } from "../../Logo";
+} from "./World/Continents";
+import { IADMFR_LOGO } from "../Logo";
 import { useState } from "react";
 
-import ContinentConfirmationStep from "../Steps/ContinentConfirmation";
-import DrawingStep from "../Steps/DrawingStep";
-import PlacementStep from "../Steps/PlacementStep";
+import ContinentConfirmationStep from "./Steps/ContinentConfirmation";
+import DrawingStep from "./Steps/DrawingStep";
+import PlacementStep from "./Steps/PlacementStep";
 import {
   BASE_VIEWBOX,
   ANIMATION_DURATION,
   steps,
   VIEWBOXES,
-} from "../../constants";
+} from "../constants";
 
-import { fetchMessages } from "../../Database/requests";
-import DevMode from "../DevMode";
+import { fetchMessages } from "../Database/requests";
+import DevMode from "./DevMode";
 
 const continents = [
   { id: "asia", component: <Asia /> },
@@ -56,7 +56,7 @@ function Worldmap() {
 
   // STEP I  - CLICK ON CONTINENT
   const handleContinentClick = async (e) => {
-    if (currentStep !== steps.continentSelection) return;
+    if (currentStep !== steps.continentSelection || currentContinent) return;
     const continent = e.currentTarget;
 
     setCurrentContinent(continent.id);
@@ -82,7 +82,7 @@ function Worldmap() {
       duration: ANIMATION_DURATION,
       attr: { viewBox: BASE_VIEWBOX },
       onComplete: () => {
-        if (!devMode && lastStep === 3) window.location.reload();
+        if ((!devMode && lastStep === 3) || devMode) window.location.reload();
       },
     });
   };
@@ -102,6 +102,7 @@ function Worldmap() {
       .map((msg) => {
         return (
           <image
+            id={msg.id}
             key={msg.id}
             className="message"
             style={{
@@ -111,7 +112,7 @@ function Worldmap() {
               height: `${msg.height}px`,
             }}
             href={msg.dataURL}
-            pointer-events="none" // Don't select messages when selecting continents
+            // pointerEvents="none" // Don't select messages when selecting continents
           />
         );
       });
@@ -119,9 +120,16 @@ function Worldmap() {
 
   // DETERMINE CONTINENT CLASSNAMES
   const classNameContinent = (continentName) => {
-    if (currentContinent === "") return "continent";
-    else if (currentContinent === continentName) return "continent-selected";
-    return "continent-unselected";
+    if (devMode) {
+      if (currentContinent === "") return "continent";
+      else if (currentContinent === continentName)
+        return "continent-dev-selected";
+      return "continent-dev-unselected";
+    } else {
+      if (currentContinent === "") return "continent";
+      else if (currentContinent === continentName) return "continent-selected";
+      return "continent-unselected";
+    }
   };
 
   // RENDER CONTINENTS

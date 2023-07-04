@@ -71,4 +71,31 @@ app.get("/messages", async (req, res) => {
   }
 });
 
+app.put("/messages", async (req, res) => {
+  const request = req.body;
+  try {
+    // Iterate over the list of messages to update
+    for (const messageData of request) {
+      const { dataURL, xcoord, ycoord, width, height } =
+        messageData;
+      console.log(messageData)
+      // Find the message by its ID and update its fields
+      await Message.updateMany(
+        { dataURL },
+        {
+          xcoord,
+          ycoord,
+          width,
+          height,
+        }
+      );
+    }
+    console.log("Messages updated successfully.");
+    res.status(200).send("Messages updated successfully.");
+  } catch (e) {
+    console.error("Failed to update messages:", e);
+    res.status(500).send("Failed to update messages.");
+  }
+});
+
 app.listen(5000);

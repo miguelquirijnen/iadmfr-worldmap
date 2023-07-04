@@ -124,6 +124,20 @@ canvas {
   cursor: default;
 }
 
+.continent-dev-selected {
+  position: relative;
+  fill: #280106;
+  stroke: #280106;
+  stroke-width: 1.5;
+}
+
+.continent-dev-unselected {
+  position: relative;
+  fill: #64020e;
+  stroke: #64020e;
+  stroke-width: 1.5;
+}
+
 .continent-unselected {
   position: relative;
   fill: #64020e;
@@ -152,7 +166,6 @@ canvas {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.0); /* Adjust the opacity (0.5) to your preference */
-  /* pointer-events: none; Allows click events to pass through the overlay */
   z-index: 1; /*Make sure the overlay is above other elements*/
   transition: background-color 0.4s ease; 
 }
@@ -174,8 +187,21 @@ canvas {
 }
 
 .message {
+  z-index: 999;
+  pointer-events: none;
+}
+
+.message-selectable {
   cursor: default;
   z-index: 999;
+  pointer-events: auto;
+}
+
+.message-selectable:hover {
+  cursor: default;
+  z-index: 999;
+  pointer-events: auto;
+  filter: invert(50%);
 }
 
 h1 {

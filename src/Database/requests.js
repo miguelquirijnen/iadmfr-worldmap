@@ -28,3 +28,16 @@ export async function fetchMessages() {
 
   return await res.json();
 }
+
+
+// Update all gives messages
+export async function updateMessages(messages) {
+  await fetch("http://localhost:5000/messages", {
+    method: "put",
+    body: JSON.stringify(messages),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+

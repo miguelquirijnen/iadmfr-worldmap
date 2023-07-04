@@ -1,7 +1,7 @@
 export const IADMFR_LOGO = ({currentStep}) => (
   <div className="logoBox">
     <svg
-      className={`iadmfr-logo ${currentStep != 0 ? "active" : ""}`}
+      className={`iadmfr-logo ${currentStep !== 0 ? "active" : ""}`}
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 823.000000 1054.000000"
