@@ -1,13 +1,27 @@
-require("dotenv").config();
-
+const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 
-try {
-  // Connect to the MongoDB cluster
-  mongoose.connect(process.env.DB_URI);
-} catch (e) {
-  console.log("could not connect");
-}
+require("dotenv").config();
+
+const app = express();
+const port = 5000;
+
+// CORS middleware
+app.use(cors());
+
+// MongoDB connection
+mongoose
+  .connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("MongoDB connection error:", error);
+  });
 
 const yourSchema = new mongoose.Schema({
   dataURL: String,
@@ -23,15 +37,12 @@ const yourSchema = new mongoose.Schema({
 const Message = mongoose.model("messages", yourSchema);
 
 // For backend and express
-const express = require("express");
-const app = express();
-const cors = require("cors");
+
 console.log("App listen at port 5000");
 
-app.use(express.json());
-app.use(cors());
 app.get("/", async (req, resp) => {
-  resp.send("IADMFR Worldmap backend is Working");
+  console.log("received req")
+  resp.send("Status 200: IADMFR Worldmap backend online");
 });
 
 // Post one message
@@ -76,9 +87,8 @@ app.put("/messages", async (req, res) => {
   try {
     // Iterate over the list of messages to update
     for (const messageData of request) {
-      const { dataURL, xcoord, ycoord, width, height } =
-        messageData;
-      console.log(messageData)
+      const { dataURL, xcoord, ycoord, width, height } = messageData;
+      console.log(messageData);
       // Find the message by its ID and update its fields
       await Message.updateMany(
         { dataURL },
@@ -98,4 +108,4 @@ app.put("/messages", async (req, res) => {
   }
 });
 
-app.listen(5000);
+app.listen(port);

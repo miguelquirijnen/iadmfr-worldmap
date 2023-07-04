@@ -1,6 +1,13 @@
+const DOMAIN = "192.168.0.222"
+// const DOMAIN = "localhost"
+
+const PORT = 5000
+
+const BASE_URL = `http://${DOMAIN}:${PORT}`;
+
 // Upload the message sketch to the database
 export async function pushToDb(data, x, y, w, h, continent) {
-  await fetch("http://localhost:5000/message", {
+  await fetch(BASE_URL + "/message", {
     method: "post",
     body: JSON.stringify({
       dataURL: data,
@@ -19,7 +26,7 @@ export async function pushToDb(data, x, y, w, h, continent) {
 
 // Get all message sketches from the database
 export async function fetchMessages() {
-  const res = await fetch("http://localhost:5000/messages/", {
+  const res = await fetch(BASE_URL + "/messages/", {
     method: "get",
     headers: {
       "Content-Type": "application/json",
@@ -29,10 +36,9 @@ export async function fetchMessages() {
   return await res.json();
 }
 
-
 // Update all gives messages
 export async function updateMessages(messages) {
-  await fetch("http://localhost:5000/messages", {
+  await fetch(BASE_URL + "/messages", {
     method: "put",
     body: JSON.stringify(messages),
     headers: {
@@ -40,4 +46,3 @@ export async function updateMessages(messages) {
     },
   });
 }
-
