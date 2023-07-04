@@ -1,51 +1,48 @@
 import React from "react";
-import {
-  START_POSITIONS,
-  VIEWBOXES
-} from "../../constants";
+import { START_POSITIONS, VIEWBOXES } from "../../constants";
 import interact from "interactjs";
 import { pushToDb } from "../../Database/requests";
 
 function PlacementStep({
   handleReturnClick,
   nextStep,
-  svgRef,
   currentMessage,
   dataUrl,
   currentContinent,
-  zoomFactor,
 }) {
   // Drag move event listener
   function dragMoveListener(event) {
     const target = event.target;
 
-    const factorX = 1 / zoomFactor[0]
-    const factorY = 1 / zoomFactor[1]
+    const [_vbX, _vbY, vbWidth, vbHeight] =
+      VIEWBOXES[currentContinent].split(" ");
 
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    const viewBoxRatio = VIEWBOXES[currentContinent].split(" ")[2] / VIEWBOXES[currentContinent].split(" ")[3];
+    const viewBoxRatio = vbWidth / vbHeight;
     const screenRatio = screenWidth / screenHeight;
 
+    let svgVisibleWidth;
+    let svgVisibleHeight;
+
+    // Width stays constant (Viewbox x and width are applicable)
     if (screenRatio < viewBoxRatio) {
-      // Width stays constant
-      console.log("constant width")
-      // Adapt factorY
-    } else if (screenRatio > viewBoxRatio) {
-      // Height stays constant
-      console.log("constant height: ", factorX, factorY)
-      // Adapt factorX
+      svgVisibleWidth = vbWidth;
+      svgVisibleHeight = vbWidth / screenRatio;
+    }
+    // Height stays constant (Viewbox y and height are applicable)
+    else if (screenRatio > viewBoxRatio) {
+      svgVisibleWidth = screenRatio * vbHeight;
+      svgVisibleHeight = vbHeight;
     }
 
-    console.log(factorX, factorY)
-     
-    const x = (parseFloat(target.style.x) || 0) + event.dx * factorX;
-    const y = (parseFloat(target.style.y) || 0) + event.dy * factorY;
+    const factorX = svgVisibleWidth / screenWidth;
+    const factorY = svgVisibleHeight / screenHeight;
 
     // Store the object's position
-    target.style.x = x;
-    target.style.y = y;
+    target.style.x = (parseFloat(target.style.x) || 0) + event.dx * factorX;
+    target.style.y = (parseFloat(target.style.y) || 0) + event.dy * factorY;
   }
 
   // Enable draggability on the draggable object
@@ -95,13 +92,10 @@ function PlacementStep({
     const moveToLeft = Math.abs(initWidth - newWidth) / 2;
     const moveUp = Math.abs(initHeight - newHeight) / 2;
 
-    const newX = initX - moveToLeft;
-    const newY = initY - moveUp;
-
     currentMessage.style.width = newWidth;
     currentMessage.style.height = newHeight;
-    currentMessage.style.x = newX;
-    currentMessage.style.y = newY;
+    currentMessage.style.x = initX - moveToLeft;
+    currentMessage.style.y = initY - moveUp;
   };
 
   // ZOOM OUT
@@ -124,13 +118,10 @@ function PlacementStep({
     const moveToRight = Math.abs(initWidth - newWidth) / 2;
     const moveDown = Math.abs(initHeight - newHeight) / 2;
 
-    const newX = initX + moveToRight;
-    const newY = initY + moveDown;
-
     currentMessage.style.width = newWidth;
     currentMessage.style.height = newHeight;
-    currentMessage.style.x = newX;
-    currentMessage.style.y = newY;
+    currentMessage.style.x = initX + moveToRight;
+    currentMessage.style.y = initY + moveDown;
   };
 
   const instructionText = `Place your message on the continent.`;

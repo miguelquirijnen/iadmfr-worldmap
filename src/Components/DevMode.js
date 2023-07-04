@@ -11,7 +11,6 @@ const DevMode = ({
   currentContinent,
   handleReturnClick,
   messages,
-  zoomFactor,
   svgRef,
 }) => {
   const handleDevClick = () => {

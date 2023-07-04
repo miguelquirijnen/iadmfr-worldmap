@@ -42,7 +42,6 @@ function Worldmap() {
   const [currentMessage, setCurrentMessage] = useState();
   const [dataUrl, setDataUrl] = useState();
   const [messages, setMessages] = useState([]);
-  const [zoomFactor, setZoomFactor] = useState([1.0, 1.0]);
   const [devMode, setDevMode] = useState(false);
 
   const svgRef = useRef(null);
@@ -66,25 +65,6 @@ function Worldmap() {
       duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[continent.id] },
       onComplete: () => {
-        const currentViewBox = svgRef.current.getAttribute("viewBox");
-        const initialDimensions = BASE_VIEWBOX.split(" ");
-        const currentDimensions = currentViewBox.split(" ");
-
-        const initialWidth = parseFloat(initialDimensions[2]);
-        const currentWidth = parseFloat(currentDimensions[2]);
-        const initialHeight = parseFloat(initialDimensions[3]);
-        const currentHeight = parseFloat(currentDimensions[3]);
-        console.log(
-          "zoom: ",
-          initialWidth / currentWidth,
-          " - ",
-          initialHeight / currentHeight
-        );
-
-        setZoomFactor([
-          initialWidth / currentWidth,
-          initialHeight / currentHeight,
-        ]);
         if (!devMode) setCurrentStep(steps.continentConfirmation);
       },
     });
@@ -102,19 +82,6 @@ function Worldmap() {
       duration: ANIMATION_DURATION,
       attr: { viewBox: BASE_VIEWBOX },
       onComplete: () => {
-        const currentViewBox = svgRef.current.getAttribute("viewBox");
-        const initialDimensions = BASE_VIEWBOX.split(" ");
-        const currentDimensions = currentViewBox.split(" ");
-
-        const initialWidth = parseFloat(initialDimensions[2]);
-        const currentWidth = parseFloat(currentDimensions[2]);
-        const initialHeight = parseFloat(initialDimensions[3]);
-        const currentHeight = parseFloat(currentDimensions[3]);
-
-        setZoomFactor([
-          initialWidth / currentWidth,
-          initialHeight / currentHeight,
-        ]);
         if (!devMode && lastStep === 3) window.location.reload();
       },
     });
@@ -214,11 +181,9 @@ function Worldmap() {
         <PlacementStep
           handleReturnClick={handleReturnClick}
           nextStep={nextStep}
-          svgRef={svgRef}
           currentMessage={currentMessage}
           dataUrl={dataUrl}
           currentContinent={currentContinent}
-          zoomFactor={zoomFactor}
         />
       )}
       {/* ------------------------ DEV MODE ------------------------ */}
@@ -229,7 +194,6 @@ function Worldmap() {
           currentContinent={currentContinent}
           handleReturnClick={handleReturnClick}
           messages={messages}
-          zoomFactor={zoomFactor}
           svgRef={svgRef}
         />
       )}
