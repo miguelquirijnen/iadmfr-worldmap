@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
-const production = false;
+const production = true;
 
 try {
   // Connect to the MongoDB cluster

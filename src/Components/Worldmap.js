@@ -46,11 +46,8 @@ function Worldmap() {
   const svgRef = useRef(null);
 
   const nextStep = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      setCurrentStep(0);
-    }
+    if (currentStep < 3) setCurrentStep(currentStep + 1);
+    else setCurrentStep(0);
   };
 
   // STEP I  - CLICK ON CONTINENT
@@ -158,12 +155,11 @@ function Worldmap() {
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
       {currentStep < 3 && currentContinent !== "" && !devMode && (
         <div
-          className={`overlay ${
-            currentStep === steps.continentConfirmation ||
+          className={`overlay ${currentStep === steps.continentConfirmation ||
             currentStep === steps.messageDrawing
-              ? "active"
-              : ""
-          }`}
+            ? "active"
+            : ""
+            }`}
         >
           {currentStep === steps.continentConfirmation && (
             <ContinentConfirmationStep

@@ -288,10 +288,10 @@ const DevMode = ({
       )}
       {selectedMessage && (
         <div style={zoomContainerStyle}>
-          <button className="button" onClick={(e) => zoomObjectIn(e)}>
+          <button className="button" style={zoomButtonStyle} onClick={(e) => zoomObjectIn(e)}>
             {zoomIn}
           </button>
-          <button className="button" onClick={(e) => zoomObjectOut(e)}>
+          <button className="button" style={zoomButtonStyle} onClick={(e) => zoomObjectOut(e)}>
             {zoomOut}
           </button>
         </div>
@@ -305,9 +305,9 @@ const buttonContainerStyle = {
   display: "flex",
   justifyContent: "center",
   bottom: "2%",
-  width: "auto", 
-  left: "50%", 
-  transform: "translate(-50%, -50%)", 
+  width: "auto",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
 };
 
 const zoomContainerStyle = {
@@ -319,9 +319,8 @@ const zoomContainerStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-end",
-  background: "rgb(255,255,255,0.6)",
-  padding: "10px",
-  borderRadius: "10px",
+  background: "rgb(255,255,255,0.3)",
+  borderRadius: "12px",
 };
 
 const iconContainterStyle = {
@@ -337,5 +336,9 @@ const textStyle = {
   fontWeight: "bold",
   width: "auto"
 };
+
+const zoomButtonStyle = {
+  width: "50px"
+}
 
 export default DevMode;
