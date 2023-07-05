@@ -2,6 +2,8 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
+const production = false;
+
 try {
   // Connect to the MongoDB cluster
   mongoose.connect(process.env.DB_URI);
@@ -20,7 +22,7 @@ const yourSchema = new mongoose.Schema({
 });
 
 // create a Mongoose model for the 'messages' collection
-const Message = mongoose.model("messages", yourSchema);
+const Message = mongoose.model(`messages${production ? "-prod" : ""}`, yourSchema);
 
 // For backend and express
 const express = require("express");

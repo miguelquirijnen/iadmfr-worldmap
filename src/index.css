@@ -219,12 +219,12 @@ h1 {
 }
 
 .iadmfr-logo {
-  width: 150pt;
-  fill: rgb(100, 2, 14, 0.3);
+  width: 15vw;
+  fill: rgb(100, 2, 14, 0.9);
 }
 
 
-.iadmfr-logo.active {
+.iadmfr-logo-active {
   width: 150pt;
   fill: rgb(100, 2, 14, 0.3);
 }

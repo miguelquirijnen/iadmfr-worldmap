@@ -166,6 +166,9 @@ const textStyle = {
   fontWeight: "bold",
   textShadow: "2px 2px 4px rgba(0, 0, 0, 0.6)",
   cursor: "default",
+  width: "auto",
+  transform: "translate(-50%, -50%)", 
+  left: "50%"
 };
 
 const zoomContainerStyle = {
@@ -188,6 +191,9 @@ const buttonContainerStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "flex-end",
+  width: "auto",
+  left: "50%",
+  transform: "translate(-50%, -50%)"
 };
 
 export default PlacementStep;

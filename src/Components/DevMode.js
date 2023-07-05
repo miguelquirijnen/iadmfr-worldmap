@@ -100,10 +100,6 @@ const DevMode = ({
     setDevMode(!devMode);
   };
 
-  useEffect(() => {
-    console.log(selectedMessage);
-  }, [selectedMessage]);
-
   const handleSelectedMessageClick = (newMessage) => {
     // Unset previous if any
     if (selectedMessage) {
@@ -309,6 +305,9 @@ const buttonContainerStyle = {
   display: "flex",
   justifyContent: "center",
   bottom: "2%",
+  width: "auto", 
+  left: "50%", 
+  transform: "translate(-50%, -50%)", 
 };
 
 const zoomContainerStyle = {
@@ -330,11 +329,13 @@ const iconContainterStyle = {
   position: "absolute",
   top: "10px",
   left: "10px",
+  width: "auto",
 };
 
 const textStyle = {
   marginLeft: "10px",
   fontWeight: "bold",
+  width: "auto"
 };
 
 export default DevMode;

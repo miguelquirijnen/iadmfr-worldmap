@@ -111,7 +111,6 @@ function Worldmap() {
               height: `${msg.height}px`,
             }}
             href={msg.dataURL}
-            // pointerEvents="none" // Don't select messages when selecting continents
           />
         );
       });
