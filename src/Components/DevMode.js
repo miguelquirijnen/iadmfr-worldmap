@@ -4,7 +4,7 @@ import interact from "interactjs";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { VIEWBOXES } from "../constants";
-import { updateMessages } from "../Database/requests";
+import { updateMessage, updateMessages } from "../Database/requests";
 
 const DevMode = ({
   devMode,
@@ -104,6 +104,13 @@ const DevMode = ({
     // Unset previous if any
     if (selectedMessage) {
       interact(selectedMessage).unset();
+      updateMessage({
+        dataURL: selectedMessage.href.baseVal,
+        xcoord: selectedMessage.getBBox().x,
+        ycoord: selectedMessage.getBBox().y,
+        width: selectedMessage.getBBox().width,
+        height: selectedMessage.getBBox().height
+      })
     }
 
     setSelectedMessage(newMessage);
@@ -139,6 +146,7 @@ const DevMode = ({
           msgElement.setAttribute("class", "message-selectable");
           interact(selectedMessage).unset();
         });
+
     }
   }, [
     devMode,
@@ -225,21 +233,21 @@ const DevMode = ({
   };
 
   const handleSave = async (e) => {
-    const group = document.getElementById(currentContinent);
-    const toSend = messages
-      .filter((msg) => msg.continent === currentContinent)
-      .map((msg) => {
-        const query = `image[href="${msg.dataURL}"]`;
-        const msgElement = group.querySelector(query);
-        return {
-          dataURL: msgElement.href.baseVal,
-          xcoord: msgElement.getBBox().x,
-          ycoord: msgElement.getBBox().y,
-          width: msgElement.getBBox().width,
-          height: msgElement.getBBox().height,
-        };
-      });
-    await updateMessages(toSend);
+    // const group = document.getElementById(currentContinent);
+    // const toSend = messages
+    //   .filter((msg) => msg.continent === currentContinent)
+    //   .map((msg) => {
+    //     const query = `image[href="${msg.dataURL}"]`;
+    //     const msgElement = group.querySelector(query);
+    //     return {
+    //       dataURL: msgElement.href.baseVal,
+    //       xcoord: msgElement.getBBox().x,
+    //       ycoord: msgElement.getBBox().y,
+    //       width: msgElement.getBBox().width,
+    //       height: msgElement.getBBox().height,
+    //     };
+    //   });
+    // // await updateMessages(toSend);
     handleReturnClick();
   };
 

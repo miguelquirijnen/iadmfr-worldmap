@@ -104,8 +104,8 @@ function Worldmap() {
             style={{
               x: `${msg.xcoord}px`,
               y: `${msg.ycoord}px`,
-              width: `${msg.width}px`,
-              height: `${msg.height}px`,
+              width: (msg.width === "au" ? `${msg.width}px` : "auto"),
+              height: (msg.height === "au" ? "auto" : `${msg.height}px`),
             }}
             href={msg.dataURL}
           />

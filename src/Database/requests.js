@@ -47,3 +47,14 @@ export async function updateMessages(messages) {
     },
   });
 }
+
+// Update a single message in the database
+export async function updateMessage(message) {
+  await fetch(BASE_URL + "/message", {
+    method: "put",
+    body: JSON.stringify(message),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

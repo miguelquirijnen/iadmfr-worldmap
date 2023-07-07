@@ -109,7 +109,7 @@ function DrawingStep({
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   };
 
-  const instructionText = `Write your message here!`;
+  const instructionText = `Write your name here!`;
   const confirmText = `Continue to placement!`;
   const clearText = `Clear`;
   const returnText = `Return to main view`;
