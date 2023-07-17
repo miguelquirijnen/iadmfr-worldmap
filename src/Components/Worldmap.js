@@ -24,6 +24,7 @@ import {
 
 import { fetchMessages } from "../Database/requests";
 import DevMode from "./DevMode";
+import VidMode from "./VidMode";
 
 const continents = [
   { id: "asia", component: <Asia /> },
@@ -104,8 +105,8 @@ function Worldmap() {
             style={{
               x: `${msg.xcoord}px`,
               y: `${msg.ycoord}px`,
-              width: (msg.width === "au" ? `${msg.width}px` : "auto"),
-              height: (msg.height === "au" ? "auto" : `${msg.height}px`),
+              width: msg.width === "au" ? `${msg.width}px` : "auto",
+              height: msg.height === "au" ? "auto" : `${msg.height}px`,
             }}
             href={msg.dataURL}
           />
@@ -130,7 +131,12 @@ function Worldmap() {
   // RENDER CONTINENTS
   const renderContinents = () => (
     <div className="svg-container">
-      <svg ref={svgRef} className="worldmap" id="worldmap" viewBox={BASE_VIEWBOX}>
+      <svg
+        ref={svgRef}
+        className="worldmap"
+        id="worldmap"
+        viewBox={BASE_VIEWBOX}
+      >
         {continents.map((c) => (
           <g
             onClick={(e) => handleContinentClick(e)}
@@ -155,11 +161,12 @@ function Worldmap() {
       {/* ------------------------ STEP COMPONENTS ------------------------ */}
       {currentStep < 3 && currentContinent !== "" && !devMode && (
         <div
-          className={`overlay ${currentStep === steps.continentConfirmation ||
+          className={`overlay ${
+            currentStep === steps.continentConfirmation ||
             currentStep === steps.messageDrawing
-            ? "active"
-            : ""
-            }`}
+              ? "active"
+              : ""
+          }`}
         >
           {currentStep === steps.continentConfirmation && (
             <ContinentConfirmationStep
@@ -199,6 +206,8 @@ function Worldmap() {
           svgRef={svgRef}
         />
       )}
+
+      <VidMode devMode={devMode} svgRef={svgRef} setCurrentContinent={setCurrentContinent} />
     </div>
   );
 }

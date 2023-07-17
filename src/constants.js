@@ -19,6 +19,7 @@ export const CONTINENT_NAMES = {
   "latin-america": "Latin-America",
 };
 
+// X Y WIDTH HEIGHT
 export const VIEWBOXES = {
   africa: "840 330 500 400",
   asia: "1000 0 800 600",
