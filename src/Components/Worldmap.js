@@ -43,6 +43,7 @@ function Worldmap() {
   const [dataUrl, setDataUrl] = useState();
   const [messages, setMessages] = useState([]);
   const [devMode, setDevMode] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   const svgRef = useRef(null);
 
@@ -196,7 +197,7 @@ function Worldmap() {
         />
       )}
       {/* ------------------------ DEV MODE ------------------------ */}
-      {(currentContinent === "" || devMode) && (
+      {((currentContinent === "" || devMode) && !setPlaying) && (
         <DevMode
           devMode={devMode}
           setDevMode={setDevMode}
@@ -207,7 +208,7 @@ function Worldmap() {
         />
       )}
 
-      <VidMode devMode={devMode} svgRef={svgRef} setCurrentContinent={setCurrentContinent} />
+      <VidMode playing={playing} setPlaying={setPlaying} svgRef={svgRef} setCurrentContinent={setCurrentContinent} />
     </div>
   );
 }

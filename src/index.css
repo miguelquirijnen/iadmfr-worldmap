@@ -114,6 +114,7 @@ canvas {
   fill: #64020e;
   stroke: #64020e;
   stroke-width: 1.5;
+  transition: fill 0.9s ease, stroke 0.9s ease; 
 }
 
 .continent-selected {
@@ -122,6 +123,7 @@ canvas {
   stroke: #47010c;
   stroke-width: 1.5;
   cursor: default;
+  transition: 1s;
 }
 
 .continent-dev-selected {
@@ -144,7 +146,7 @@ canvas {
   stroke: #64020e;
   stroke-width: 1.5;
   cursor: default;
-  transition: fill 0.9s ease; 
+  transition: 1s
 }
 
 .continent:hover {
@@ -220,13 +222,13 @@ h1 {
 }
 
 .iadmfr-logo {
-  width: 15vw;
+  width: 10vw;
   fill: rgb(100, 2, 14, 0.9);
 }
 
 
 .iadmfr-logo-active {
-  width: 150pt;
+  width: 100pt;
   fill: rgb(100, 2, 14, 0.3);
 }
 

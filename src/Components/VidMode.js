@@ -4,6 +4,9 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import gsap from "gsap";
 import { BASE_VIEWBOX, VIEWBOXES } from "../constants";
 
+const N_LATIN_AMERICA = "400 350 200 200";
+const C_LATIN_AMERICA = "600 500 200 150";
+const S_LATIN_AMERICA = "550 550 200 200";
 
 const N_EUROPE = "950 55 220 100";
 const C_EUROPE = "920 130 190 100";
@@ -20,16 +23,21 @@ const ASIA_1 = "1410 240 400 80";
 const ASIA_2 = "1410 350 300 80";
 const ASIA_3 = "1420 480 350 80";
 
-const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
-  const [playing, setPlaying] = useState(false);
+const AUSTRALASIA_ZOOM = "1520 420 450 400";
+
+const DELAY_TRAVEL = 2;
+const ANIMATION_DURATION = 3;
+
+const VidMode = ({ playing, setPlaying, svgRef, setCurrentContinent }) => {
   // VISIT 1: LATIN AMERICA
   const handlePlayClick = () => {
     setPlaying(true);
-    // toLatinAmerica();
+    toLatinAmerica();
     // toEurope();
     // toMiddleEast();
     // toAfrica();
-    toAsia()
+    // toAustralasia();
+    // toAsia()
     // gsap.to(svgRef.current, {
     //     attr: { viewBox: ASIA_3 },
     // })
@@ -41,6 +49,7 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
     gsap.to(svgRef.current, {
       duration: 1.5,
       attr: { viewBox: VIEWBOXES[currentContinent] },
+      delay: 3,
       onComplete: () => {
         setCurrentContinent(currentContinent);
         travelLatinAmerica();
@@ -50,21 +59,20 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
 
   const travelLatinAmerica = () => {
     gsap.to(svgRef.current, {
-      duration: 2,
-      attr: { viewBox: "400 350 200 200" },
+      duration: ANIMATION_DURATION,
+      attr: { viewBox: N_LATIN_AMERICA },
       delay: 0.5,
       onComplete: () => {
         gsap.to(svgRef.current, {
-          duration: 2,
-          attr: { viewBox: "600 500 200 150" },
-          delay: 1,
+          duration: ANIMATION_DURATION,
+          attr: { viewBox: C_LATIN_AMERICA },
+          delay: DELAY_TRAVEL,
           onComplete: () => {
             gsap.to(svgRef.current, {
-              duration: 2,
-              attr: { viewBox: "550 550 200 200" },
-              delay: 1,
+              duration: ANIMATION_DURATION,
+              attr: { viewBox: S_LATIN_AMERICA },
+              delay: DELAY_TRAVEL,
               onComplete: () => {
-                setCurrentContinent("");
                 toNorthAmerica();
               },
             });
@@ -79,9 +87,9 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
     const currentContinent = "north-america";
 
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[currentContinent] },
-      delay: 2,
+      delay: DELAY_TRAVEL,
       onComplete: () => {
         setCurrentContinent(currentContinent);
         travelNorthAmerica();
@@ -91,14 +99,14 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
 
   const travelNorthAmerica = () => {
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: "300 150 250 100" },
-      delay: 1,
+      delay: DELAY_TRAVEL,
       onComplete: () => {
         gsap.to(svgRef.current, {
-          duration: 2,
+          duration: ANIMATION_DURATION,
           attr: { viewBox: "450 180 250 100" },
-          delay: 1,
+          delay: DELAY_TRAVEL,
           onComplete: () => {
             toEurope();
           },
@@ -112,9 +120,9 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
     const currentContinent = "europe";
 
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[currentContinent] },
-      delay: 2,
+      delay: DELAY_TRAVEL,
       onComplete: () => {
         setCurrentContinent(currentContinent);
         travelEurope();
@@ -124,26 +132,25 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
 
   const travelEurope = () => {
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: N_EUROPE },
       delay: 1,
       onComplete: () => {
         gsap.to(svgRef.current, {
-          duration: 2,
+          duration: ANIMATION_DURATION,
           attr: { viewBox: C_EUROPE },
-          delay: 1,
+          delay: DELAY_TRAVEL,
           onComplete: () => {
             gsap.to(svgRef.current, {
-              duration: 2,
+              duration: ANIMATION_DURATION,
               attr: { viewBox: SE_EUROPE },
-              delay: 1,
+              delay: DELAY_TRAVEL,
               onComplete: () => {
                 gsap.to(svgRef.current, {
-                  duration: 2,
+                  duration: ANIMATION_DURATION,
                   attr: { viewBox: SW_EUROPE },
-                  delay: 1,
+                  delay: DELAY_TRAVEL,
                   onComplete: () => {
-                    setCurrentContinent("");
                     toMiddleEast();
                   },
                 });
@@ -159,12 +166,12 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
   const toMiddleEast = () => {
     const currentContinent = "middle-east";
 
-    setCurrentContinent(currentContinent);
-
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[currentContinent] },
+      delay: DELAY_TRAVEL,
       onComplete: () => {
+        setCurrentContinent(currentContinent);
         travelMiddleEast();
       },
     });
@@ -172,12 +179,12 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
 
   const travelMiddleEast = () => {
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: MIDDLE_EAST_1 },
       delay: 1,
       onComplete: () => {
         gsap.to(svgRef.current, {
-          duration: 2,
+          duration: ANIMATION_DURATION,
           attr: { viewBox: MIDDLE_EAST_2 },
           delay: 1,
           onComplete: () => {
@@ -195,8 +202,9 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
     setCurrentContinent(currentContinent);
 
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[currentContinent] },
+      delay: DELAY_TRAVEL,
       onComplete: () => {
         travelAfrica();
       },
@@ -205,12 +213,12 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
 
   const travelAfrica = () => {
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: AFRICA_1 },
       delay: 1,
       onComplete: () => {
         gsap.to(svgRef.current, {
-          duration: 2,
+          duration: ANIMATION_DURATION,
           attr: { viewBox: AFRICA_2 },
           delay: 1,
           onComplete: () => {
@@ -221,17 +229,16 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
     });
   };
 
-
   // VISIT 6: ASIA
   const toAsia = () => {
     const currentContinent = "asia";
 
-    setCurrentContinent(currentContinent);
-
     gsap.to(svgRef.current, {
       duration: 2,
       attr: { viewBox: VIEWBOXES[currentContinent] },
+      delay: DELAY_TRAVEL,
       onComplete: () => {
+        setCurrentContinent(currentContinent);
         travelAsia();
       },
     });
@@ -239,41 +246,46 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
 
   const travelAsia = () => {
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: ASIA_1 },
       delay: 1,
       onComplete: () => {
         gsap.to(svgRef.current, {
-          duration: 2,
+          duration: ANIMATION_DURATION,
           attr: { viewBox: ASIA_2 },
-          delay: 1,
+          delay: DELAY_TRAVEL,
           onComplete: () => {
             gsap.to(svgRef.current, {
-                duration: 2,
-                attr: { viewBox: ASIA_3 },
-                delay: 1,
-                onComplete: () => {
-                  return;
-                },
-              });
+              duration: ANIMATION_DURATION,
+              attr: { viewBox: ASIA_3 },
+              delay: DELAY_TRAVEL,
+              onComplete: () => {
+                toAustralasia();
+              },
+            });
           },
         });
       },
     });
   };
 
-
   // VISIT 7: AUSTRALASIA
-  const visitAustralasia = () => {
+  const toAustralasia = () => {
     const currentContinent = "australasia";
 
     setCurrentContinent(currentContinent);
 
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: VIEWBOXES[currentContinent] },
       onComplete: () => {
-        finalize();
+        gsap.to(svgRef.current, {
+          duration: ANIMATION_DURATION,
+          attr: { viewBox: AUSTRALASIA_ZOOM },
+          onComplete: () => {
+            finalize();
+          },
+        });
       },
     });
   };
@@ -282,12 +294,12 @@ const VidMode = ({ devMode, svgRef, setCurrentContinent }) => {
   const finalize = () => {
     const currentContinent = "";
 
-    setCurrentContinent(currentContinent);
-
     gsap.to(svgRef.current, {
-      duration: 2,
+      duration: ANIMATION_DURATION,
       attr: { viewBox: BASE_VIEWBOX },
+      delay: DELAY_TRAVEL,
       onComplete: () => {
+        setCurrentContinent(currentContinent);
         return;
       },
     });
